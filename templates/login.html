@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Log-in</title>
+    </head>
+    <body>
+        <h2>User log-in</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p style ="color: red;">{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <br>
+
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>

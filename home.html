@@ -36,6 +36,28 @@
         .box-one {
             margin-left: 100px;
         }
+
+        .favorite-button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid #f13500;
+            background-color: white;
+            
+            color: #f13500;
+            font-size: 22px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+        }
+
+        .favorite-button.favorited {
+            color: #f13500;
+        }
     </style>
 </head>
     <body>
@@ -81,10 +103,11 @@
             </div>
             <div>
                 <img src="The bard images/placeholder.png" width="250" style="box-shadow:10px 10px 10px rgba(0, 0, 0, 0.3)">
-                <div style="display: flex">
+                <div style="display: flex; align-items: center;">
                     <p><b>artist name</b></p> 
-                    <img src="The bard images/heart.png" width="25" height="25" 
-                    style="margin-top: 15px; margin-left: 150px; box-shadow:5px 5px 5px rgba(0, 0, 0, 0.3)">
+                    <form class="/favorite-form/" action="/favorite/" method="POST" style="margin-left: auto;">
+                        <button class="favorite-button" type="submit">♡</button>
+                    </form>
                 </div>
                 <p style="margin-top: 0px">artist information here</p>
             </div>

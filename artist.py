@@ -1,3 +1,7 @@
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
 artists = [
     {
         "name": "Artist 1",
@@ -20,3 +24,7 @@ artists = [
         "information": "Artist information here"
     }
 ]
+
+@app.route("/")
+def home():
+    return render_template("home.html", artists=artists)

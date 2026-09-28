@@ -40,7 +40,7 @@ USER_DATABASE = {
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", artists=artists)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,11 +48,23 @@ def login():
         user = request.form.get('username')
         pw = request.form.get('password')
 
-        if user in USER_DATABASE:
-            hashed_password = USER_DATABASE[user]
+        connection = sqlite3.connect("website.db")
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "SELECT id, password FROM users WHERE username = ?",
+            (user,)
+        )
+
+        account = cursor.fetchone()
+        connection.close()
+
+        if account is not None:
+            user_id, hashed_password = account
 
             if check_password_hash(hashed_password, pw):
-                return f"Welcome back, {user}! Sign-in successful."
+                session["uid"] = user_id
+                return redirect(url_for("home"))
 
         flash("Incorrect usename or password. Please try again.")
         return redirect(url_for('login'))
@@ -69,7 +81,7 @@ def favorites(post_id):
     cursor = connection.cursor()
 
     cursor.execute(
-        "INSER INTO favorites (user_id, post_id) VALUES (?, ?)",
+        "INSERT INTO favorites (user_id, post_id) VALUES (?, ?)",
         (uid, post_id)
     )
     connection.commit()

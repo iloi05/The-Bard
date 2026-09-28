@@ -35,6 +35,12 @@
             margin-top: 80px;
         }
 
+        .image-container {
+            width: 250px;
+        }
+        .image-container img {
+            display:block;
+        }
         .favorite-button {
             width: 30px;
             height: 30px;
@@ -72,7 +78,7 @@
         </script>
         <div class="nav">
             <a href="home.html">
-                <img src="The bard images/logo.png" width="150">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
             </a>
             <div>Home</div>
             <div class="nava">
@@ -81,17 +87,16 @@
             </div>
         </div>
 
+        
         <div class="container">
-            {% for artist in artists %}
-            <div class="artist-box">
+           {% for artist in artists %}
+           <div class="artist-box">
                 <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
-
-                <div style="display: flex;">
+                <div style="display: flex">
                     <p><b>{{ artist.name }}</b></p>
-
-                    <button class="favorite-button"
-                    type="button"
-                    onclick="toggleFavorite(this)">♡</button>
+                    <form class="/favorite-form" action="/favorite/" method="POST" style="margin-left: auto;">
+                        <button class="favorite-button" type="button" onclick="toggleFavorite(this)">♡</button> 
+                    </form>
                 </div>
 
                 <p>{{ artist.information }}</p>

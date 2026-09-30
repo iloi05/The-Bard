@@ -91,10 +91,10 @@ def favorites(post_id):
 
 @app.route("/favorites")
 def favorites_page():
-    uid = session.get("uid")
-
-    if uid is None:
-        return redirect(url_for("login"))
+    #uid = session.get("uid")
+#
+    #if uid is None:
+    #    return redirect(url_for("login"))
     return render_template("fav.html")
 
 if __name__ == '__main__':

@@ -28,9 +28,11 @@
         }
          .container {
             display: flex;
-            justify-content: center;
-            gap: 120px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 40px;
             margin-top: 80px;
+            padding: 0 40px;
         }
 
         .image-container {
@@ -72,6 +74,10 @@
         }
         .artist-box > p {
             margin-top: 0;
+        }
+        .empty-message {
+            width: 100%;
+            text-align: center;
         }
     </style>
 </head>
@@ -118,7 +124,7 @@
                 `;
             });
             if (favoriteArtists.length === 0) {
-                container.innerHTML = "<p>You have not favorited any artists.</p>";
+                container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
             }
             function removeFromFavorites(artistId) {
                 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];

@@ -65,6 +65,18 @@
         .favorite-button.favorited {
             color: #f13500;
         }
+        .artist-info {
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .artist-info p {
+            margin-bottom: 5px;
+        }
+        .artist-box > p {
+            margin-top: 0;
+        }
     </style>
 </head>
     <body>
@@ -123,11 +135,13 @@
            <div class="artist-box">
                 <div class="image-container">
                     <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
+                </div>
+                <div class="artist-info">
+                    <p><b>{{ artist.name }}</b></p>
                     <div class="heart-container">
                         <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button>
                     </div>
                 </div>
-                <p><b>{{ artist.name }}</b></p>
                 <p>{{ artist.information }}</p>
             </div>
             {% endfor %}

@@ -61,6 +61,18 @@
 
             cursor: pointer;
         }
+        .artist-info {
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .artist-info p {
+            margin-bottom: 5px;
+        }
+        .artist-box > p {
+            margin-top: 0;
+        }
     </style>
 </head>
     <body>
@@ -89,6 +101,9 @@
                     <div class="artist-box">
                         <div class="image-container">
                             <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250" alt="${artist.name}">
+                        </div>
+                        <div class="artist-info">
+                            <p><b>${artist.name}</b></p>
                             <div class="heart-container">
                                 <button 
                                     class="favorite-button"
@@ -98,13 +113,12 @@
                                 </button>
                             </div>
                         </div>
-                        <p><b>${artist.name}</b></p>
                         <p>${artist.information}</p>
                     </div>
                 `;
             });
             if (favoriteArtists.length === 0) {
-                container.innerHTML = "<p>No favorite artists found.</p>";
+                container.innerHTML = "<p>You have not favorited any artists.</p>";
             }
             function removeFromFavorites(artistId) {
                 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];

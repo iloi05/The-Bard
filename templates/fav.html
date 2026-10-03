@@ -39,6 +39,11 @@
         .image-container img {
             display:block;
         }
+        .heart-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
         .favorite-button {
             width: 30px;
             height: 30px;
@@ -81,12 +86,19 @@
             const container = document.getElementById("favorites-container");
             favoriteArtists.forEach(artist => {
                 container.innerHTML += `
-                    <div class="image-container">
-                        <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250" alt="${artist.name}">
-                        <div style="display: flex; align-items: center;">
-                        <p><b>${artist.name}</b></p>
-                        <button class="favorite-button" onclick="removeFromFavorites(${artist.id})">♥</button>
+                    <div class="artist-box">
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250" alt="${artist.name}">
+                            <div class="heart-container">
+                                <button 
+                                    class="favorite-button"
+                                    type="button"
+                                    onclick="removeFromFavorites(${artist.id})">
+                                    ♥
+                                </button>
+                            </div>
                         </div>
+                        <p><b>${artist.name}</b></p>
                         <p>${artist.information}</p>
                     </div>
                 `;

@@ -39,6 +39,11 @@
         .image-container img {
             display:block;
         }
+        .heart-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
         .favorite-button {
             width: 30px;
             height: 30px;
@@ -116,14 +121,13 @@
         <div class="container">
            {% for artist in artists %}
            <div class="artist-box">
-                <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
-                <div style="display: flex">
-                    <p><b>{{ artist.name }}</b></p>
-                    <!--<form class="/favorite-form" action="/favorite/" method="POST" style="margin-left: auto;"> -->
-                    <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button> 
-                   <!-- </form> -->
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
+                    <div class="heart-container">
+                        <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button>
+                    </div>
                 </div>
-
+                <p><b>{{ artist.name }}</b></p>
                 <p>{{ artist.information }}</p>
             </div>
             {% endfor %}

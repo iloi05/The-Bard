@@ -1,11 +1,6 @@
-# For user log-in
-
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+from flask import Flask, render_template
 
 app = Flask(__name__)
-app.secret_key = 'your_super_secret_key_here'
 
 artists = [
     {
@@ -34,43 +29,9 @@ artists = [
     }
 ]
 
-USER_DATABASE = {
-    "admin_user": generate_password_hash("securepassword123")
-}
-
 @app.route("/")
 def home():
     return render_template("home.html", artists=artists)
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        user = request.form.get('username')
-        pw = request.form.get('password')
-
-        connection = sqlite3.connect("website.db")
-        cursor = connection.cursor()
-
-        cursor.execute(
-            "SELECT id, password FROM users WHERE username = ?",
-            (user,)
-        )
-
-        account = cursor.fetchone()
-        connection.close()
-
-        if account is not None:
-            user_id, hashed_password = account
-
-            if check_password_hash(hashed_password, pw):
-                session["uid"] = user_id
-                return redirect(url_for("home"))
-
-        flash("Incorrect usename or password. Please try again.")
-        return redirect(url_for('login'))
-    return render_template('login.html')
-
-
 
 @app.route("/favorites")
 def favorites_page():

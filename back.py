@@ -70,24 +70,24 @@ def login():
         return redirect(url_for('login'))
     return render_template('login.html')
 
-@app.route("/favorite/<int:post_id>", methods=["POST"])
-def favorites(post_id):
-    uid = session.get("uid")
-
-    if uid is None:
-        return redirect(url_for("login"))
-
-    connection = sqlite3.connect("website.db")
-    cursor = connection.cursor()
-
-    cursor.execute(
-        "INSERT INTO favorites (user_id, post_id) VALUES (?, ?)",
-        (uid, post_id)
-    )
-    connection.commit()
-    connection.close()
-
-    return redirect(url_for("home"))
+#@app.route("/favorite/<int:post_id>", methods=["POST"])
+#def favorites(post_id):
+#    uid = session.get("uid")
+#
+#    if uid is None:
+#        return redirect(url_for("login"))
+#
+#    connection = sqlite3.connect("website.db")
+#    cursor = connection.cursor()
+#
+#    cursor.execute(
+#        "INSERT INTO favorites (user_id, post_id) VALUES (?, ?)",
+#        (uid, post_id)
+#    )
+#    connection.commit()
+#    connection.close()
+#
+#    return redirect(url_for("home"))
 
 @app.route("/favorites")
 def favorites_page():
@@ -95,7 +95,7 @@ def favorites_page():
 #
     #if uid is None:
     #    return redirect(url_for("login"))
-    return render_template("fav.html")
+    return render_template("fav.html", artists = artists)
 
 if __name__ == '__main__':
     app.run(debug = True)

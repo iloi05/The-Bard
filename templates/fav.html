@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<head>
     <style>
         body {
             background-color: rgb(249, 243, 188);
@@ -25,5 +26,83 @@
             color:rgb(227, 212, 80);
             margin: 0 10px;
         }
+         .container {
+            display: flex;
+            justify-content: center;
+            gap: 120px;
+            margin-top: 80px;
+        }
+
+        .image-container {
+            width: 250px;
+        }
+        .image-container img {
+            display:block;
+        }
+        .favorite-button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid #f13500;
+            background-color: white;
+            
+            color: #f13500;
+            font-size: 22px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+        }
     </style>
+</head>
+    <body>
+        <div class="nav">
+            <a href="home.html">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
+            </a>
+            <div>Favorites</div>
+            <div class="nava">
+                <a href="{{ url_for('home') }}">Home ⌂︎</a> |
+                <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
+            </div>
+        </div>
+        <div class="container" id="favorites-container"></div>
+        <script id="artists-data" type="application/json">
+            {{ artists | tojson }}
+        </script>
+        <script>
+            const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+            const favoriteIds = favorites.map(favorite => String(favorite.id));
+            const artists = JSON.parse(document.getElementById("artists-data").textContent);
+            const favoriteArtists = artists.filter(artist => favoriteIds.includes(String(artist.id)));
+            const container = document.getElementById("favorites-container");
+            favoriteArtists.forEach(artist => {
+                container.innerHTML += `
+                    <div class="image-container">
+                        <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250" alt="${artist.name}">
+                        <div style="display: flex; align-items: center;">
+                        <p><b>${artist.name}</b></p>
+                        <button class="favorite-button" onclick="removeFromFavorites(${artist.id})">♥</button>
+                        </div>
+                        <p>${artist.information}</p>
+                    </div>
+                `;
+            });
+            if (favoriteArtists.length === 0) {
+                container.innerHTML = "<p>No favorite artists found.</p>";
+            }
+            function removeFromFavorites(artistId) {
+                let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+                favorites = favorites.filter(
+                    favorite => String(favorite.id) !== String(artistId)
+                );
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                location.reload();
+            }
+        </script>
+    </body>
+     
 </html>

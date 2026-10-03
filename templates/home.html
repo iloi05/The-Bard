@@ -5,8 +5,6 @@
         body {
             background-color: rgb(249, 243, 188);
             margin: 0;
-            
-            
         }
         .nav {
             background-color: rgb(51, 99, 51);
@@ -66,14 +64,41 @@
 </head>
     <body>
         <script>
+            function getFavorites() {
+                const saved = localStorage.getItem("favorites");
+                return saved ? JSON.parse(saved) : [];
+            }
             function toggleFavorite(button) {
-                button.classList.toggle("favorited");
-
-                if (button.classList.contains("favorited")) {
-                    button.innerHTML = "♥";
+                let favorites = getFavorites();
+                const id = button.getAttribute("data-artist-id");
+                const name = button.getAttribute("data-artist-name");
+                const index = favorites.findIndex(fav => fav.id === id);
+                if (index !== -1) {
+                    favorites.splice(index, 1);
                 } else {
-                    button.innerHTML = "♡";
+                    favorites.push({ id: id, name: name });
                 }
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                updateFavoriteButtons();
+            }
+            
+            function updateFavoriteButtons() {
+                let favorites = getFavorites();
+                document.querySelectorAll(".favorite-button").forEach(button => {
+                    let artistId = button.getAttribute("data-artist-id");
+                    const isFavorited = favorites.some(fav => fav.id === artistId);
+                    if (isFavorited) {
+                        button.classList.add("favorited");
+                        button.innerHTML = "♥";
+                    } else {
+                        button.classList.remove("favorited");
+                        button.innerHTML = "♡";
+                    }
+                });
+            }
+
+            window.onload = function() {
+                updateFavoriteButtons();
             }
         </script>
         <div class="nav">
@@ -94,9 +119,9 @@
                 <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
                 <div style="display: flex">
                     <p><b>{{ artist.name }}</b></p>
-                    <form class="/favorite-form" action="/favorite/" method="POST" style="margin-left: auto;">
-                        <button class="favorite-button" type="button" onclick="toggleFavorite(this)">♡</button> 
-                    </form>
+                    <!--<form class="/favorite-form" action="/favorite/" method="POST" style="margin-left: auto;"> -->
+                    <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button> 
+                   <!-- </form> -->
                 </div>
 
                 <p>{{ artist.information }}</p>

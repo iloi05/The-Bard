@@ -78,6 +78,7 @@
             margin-top: 0;
         }
     </style>
+    <script src="js/artists.js"></script>
 </head>
     <body>
         <script>
@@ -120,31 +121,36 @@
         </script>
         <div class="nav">
             <a href="home.html">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
+                <img src="images/logo.png" width="150">
             </a>
             <div>Home</div>
             <div class="nava">
-                <a href="{{ url_for('home') }}">Home ⌂︎</a> |
-                <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
+                <a href="home.html">Home ⌂︎</a> |
+                <a href="fav.html">Favorites ♡</a>
             </div>
         </div>
 
         
-        <div class="container">
-           {% for artist in artists %}
-           <div class="artist-box">
-                <div class="image-container">
-                    <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250">
-                </div>
+        <div class="container" id="artists-container">
+        <script>
+           const container = document.getElementById("artists-container");
+           artists.forEach(artist => {
+            container.innerHTML += `
+                <div class="artist-box">
+                    <div class="image-container">
+                        <img src="${artist.image}" width="250">
+                    </div>
                 <div class="artist-info">
-                    <p><b>{{ artist.name }}</b></p>
+                    <p><b>${artist.name}</b></p>
                     <div class="heart-container">
-                        <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button>
+                        <button class="favorite-button" type="button" data-artist-id="${artist.id}" data-artist-name="${artist.name}" onclick="toggleFavorite(this)">♡</button>
                     </div>
                 </div>
-                <p>{{ artist.information }}</p>
+                <p>${artist.information}</p>
             </div>
-            {% endfor %}
+            `;
+           });
+        </script>
         </div>
         
     </body>

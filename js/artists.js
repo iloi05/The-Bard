@@ -9,7 +9,7 @@ var artists = [
         "id": 2,
         "name": "Mariah Carey",
         "image": "images/mariah_carey.png",
-        "information": "Considered to be one of the greatest singers of all time, Mariah Carey boasts a five-octave vocal range and frequently uses the whistle register. Her song \"All I Want for Christmas Is You\" is the second longest-running number 1 song on the Billboard Hot 100, with 22 weeks spent at number 1."
+        "information": "Considered to be one of the greatest singers of all time, Mariah Carey boasts a five-octave vocal range and frequently uses the whistle register. Her song \"All I Want for Christmas Is You\" is the second longest-running number one song on the Billboard Hot 100, with 22 weeks spent at number one."
     },
     {
         "id": 3,
@@ -25,14 +25,14 @@ var artists = [
     },
     {
         "id": 5,
-        "name": "Artist 5",
-        "image": "images/placeholder.png",
-        "information": "Artist information here"
+        "name": "Michael Jackson",
+        "image": "images/michael_jackson.jpg",
+        "information": "Considered to be one of the most influential musical artists of all time as well as the greatest entertainer of all time. He is known as the \"King of Pop\" and as made hits such as \"Thriller\" and \"Billie Jean\"."
     },
     {
         "id": 6,
-        "name": "Artist 6",
-        "image": "images/placeholder.png",
-        "information": "Artist information here"
+        "name": "Céline Dion",
+        "image": "images/celine_dion.jpg",
+        "information": "Known as the \"Queen of Power Ballads\", Dion has powerful and skilled vocals. Her song \"My Heart Will Go On\" won four Grammy awards and is one of the best selling singles of all time. She has sold over 200 million records, making her one of the best selling musical acts of all time."
     }
 ];

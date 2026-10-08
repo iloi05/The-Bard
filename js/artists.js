@@ -22,5 +22,17 @@ var artists = [
         "name": "Artist 4",
         "image": "images/placeholder.png",
         "information": "Artist information here"
+    },
+    {
+        "id": 5,
+        "name": "Artist 5",
+        "image": "images/placeholder.png",
+        "information": "Artist information here"
+    },
+    {
+        "id": 6,
+        "name": "Artist 6",
+        "image": "images/placeholder.png",
+        "information": "Artist information here"
     }
 ];

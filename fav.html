@@ -131,6 +131,7 @@
     </style>
 </head>
     <body>
+        <!-- Navigation bar -->
         <div class="nav">
             <a href="home.html">
                 <img src="images/logo.png" width="150">
@@ -143,10 +144,11 @@
         </div>
         <div class="container" id="favorites-container"></div>
         <script>
+            // Fetches artists that have been favorited by the user
             const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
             const favoriteIds = favorites.map(favorite => String(favorite.id));
             const favartists = artists.filter(artist => favoriteIds.includes(String(artist.id)));
-            
+            // For loop that displays all favorited artists
             const container = document.getElementById("favorites-container");
             favartists.forEach(artist => {
                 const artistBox = document.createElement("div");
@@ -165,11 +167,11 @@
                     </div>
                     <button class="info-btn" type="button">Info</button>
                 `;
-
+                // Favorites button click behavior (unfavorited if clicked)
                 artistBox.querySelector(".favorite-button").addEventListener("click", () => {
                     removeFromFavorites(artist.id);
                 });
-
+                // Info button click behavior (displays artist information)
                 artistBox.querySelector(".info-btn").addEventListener("click", () => {
                     showInfo(artist.information);
                 });
@@ -177,7 +179,7 @@
                 container.appendChild(artistBox);
             });
 
-
+            // Display a message if no artists have been favorited
             if (favartists.length === 0) {
                 container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
             }
@@ -191,6 +193,7 @@
             }
         </script>
         <script>
+            // Function to display artist information in a dialog box
             function showInfo(info) {
                 const dialog = document.createElement("dialog");
                 dialog.innerHTML = `

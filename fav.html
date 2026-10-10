@@ -142,26 +142,35 @@
             
             const container = document.getElementById("favorites-container");
             favartists.forEach(artist => {
-                container.innerHTML += `
-                    <div class="artist-box">
-                        <div class="image-container">
-                            <img src="${artist.image}" width="250" alt="${artist.name}">
-                        </div>
-                        <div class="artist-info">
-                            <p><b>${artist.name}</b></p>
-                            <div class="heart-container">
-                                <button 
-                                    class="favorite-button"
-                                    type="button"
-                                    onclick="removeFromFavorites(${artist.id})">
-                                    ♥
-                                </button>
-                            </div>
-                        </div>
-                        <button class="info-btn" type="button" onclick="showInfo('${artist.information}')">Info</button>
+                const artistBox = document.createElement("div");
+                artistBox.className = "artist-box";
+                artistBox.innerHTML = `
+                    <div class="image-container">
+                        <img src="${artist.image}" width="250" alt="${artist.name}">
                     </div>
+                    <div class="artist-info">
+                        <p><b>${artist.name}</b></p>
+                        <div class="heart-container">
+                            <button class="favorite-button" type="button">
+                                ♥
+                            </button>
+                        </div>
+                    </div>
+                    <button class="info-btn" type="button">Info</button>
                 `;
+
+                artistBox.querySelector(".favorite-button").addEventListener("click", () => {
+                    removeFromFavorites(artist.id);
+                });
+
+                artistBox.querySelector(".info-btn").addEventListener("click", () => {
+                    showInfo(artist.information);
+                });
+
+                container.appendChild(artistBox);
             });
+
+
             if (favartists.length === 0) {
                 container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
             }
@@ -179,7 +188,7 @@
                 const dialog = document.createElement("dialog");
                 dialog.innerHTML = `
                     <p></p>
-                    <button class="close-btn" onclick="this.parentElement.close()">Close</button>
+                    <button class="close-btn" type="button">Close</button>
                 `;
                 dialog.querySelector("p").textContent = info;
                 const closeButton = dialog.querySelector(".close-btn");

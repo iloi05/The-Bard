@@ -34,5 +34,29 @@ var artists = [
         "name": "Céline Dion",
         "image": "images/celine_dion.jpg",
         "information": "Known as the \"Queen of Power Ballads\", Dion has powerful and skilled vocals. Her song \"My Heart Will Go On\" won four Grammy awards and is one of the best selling singles of all time. She has sold over 200 million records, making her one of the best selling musical acts of all time."
+    },
+    {
+        "id": 7,
+        "name": "Anita Mui",
+        "image": "images/placeholder.png",
+        "information": "Anita Mui was and still is a popular pop artist from Hong Kong. \ Debuting in the '80s, she's known for her flashy stage shows and being an actor as well. \ Unfortunately she passed from cancer on December 30, 2003."
+    },
+    {
+        "id": 8,
+        "name": "Dabin.kr",
+        "image": "images/placeholder.png",
+        "information": "Previously known as DPR LIVE, Dabin.kr left the Dream Perfect Regime (DPR) to transition to a solo career. \ He debuted  as DPR Live in 2016, and became Dabin.kr in 2023. \ The genres of music he covers are: K-hip-hop, Korean R&B, pop rap, and alt R&B. \ His most popular song as DPR Live is \"Jasmine\", and his most popular song as Dabin.kr is Ghost K!D."
+    },
+    {
+        "id": 9,
+        "name": "Beyond",
+        "image": "images/placeholder.png",
+        "information": "Beyond was formed in 1983 and became a greatly successful and influential rock, Cantopop band in Hong Kong. \ They are well known for cultural and social movement anthems such as \"Glorious Years\". \ They disbanded in 2005."
+    },
+    {
+        "id": 10,
+        "name": "Irene Kral",
+        "image": "images/placeholder.png",
+        "information": "Irene Kral  was known for putting emotion and subtlety into her work. \ Kral was a jazz singer that debuted with the Jay Burkhardt Big Band and freelanced, she spent nine months singing with Maynard Ferguson's big band in 1957. \ She tragically passed from cancer in her late 40s."
     }
 ];

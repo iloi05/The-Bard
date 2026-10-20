@@ -38,31 +38,31 @@ var artists = [
     {
         "id": 7,
         "name": "Anita Mui",
-        "image": "images/placeholder.png",
+        "image": "images/anita_mui.jpg",
         "information": "Anita Mui was and still is a popular pop artist from Hong Kong. \ Debuting in the '80s, she's known for her flashy stage shows and being an actor as well. \ Unfortunately she passed from cancer on December 30, 2003."
     },
     {
         "id": 8,
         "name": "Dabin.kr",
-        "image": "images/placeholder.png",
+        "image": "images/dabin.jpg",
         "information": "Previously known as DPR LIVE, Dabin.kr left the Dream Perfect Regime (DPR) to transition to a solo career. \ He debuted  as DPR Live in 2016, and became Dabin.kr in 2023. \ The genres of music he covers are: K-hip-hop, Korean R&B, pop rap, and alt R&B. \ His most popular song as DPR Live is \"Jasmine\", and his most popular song as Dabin.kr is Ghost K!D."
     },
     {
         "id": 9,
         "name": "Beyond",
-        "image": "images/placeholder.png",
+        "image": "images/Beyond.webp",
         "information": "Beyond was formed in 1983 and became a greatly successful and influential rock, Cantopop band in Hong Kong. \ They are well known for cultural and social movement anthems such as \"Glorious Years\". \ They disbanded in 2005."
     },
     {
         "id": 10,
         "name": "Irene Kral",
-        "image": "images/placeholder.png",
+        "image": "images/irene_kral.jpg",
         "information": "Irene Kral  was known for putting emotion and subtlety into her work. \ Kral was a jazz singer that debuted with the Jay Burkhardt Big Band and freelanced, she spent nine months singing with Maynard Ferguson's big band in 1957. \ She tragically passed from cancer in her late 40s."
     },
     {
         "id": 11,
         "name": "Billie Holiday",
-        "image": "images/placeholder.png",
+        "image": "images/billie_holiday.jpg",
         "information": "A popular jazz singer who debuted around 1931, Billie Holiday is well known among today's youth for her song \"I'll Be Seeing You\". \ Her best performances are \"Lover Man\", \"Don't Explain\", \"Strange Fruit\", and \"God Bless the Child\". "
     },
     {

@@ -58,5 +58,17 @@ var artists = [
         "name": "Irene Kral",
         "image": "images/placeholder.png",
         "information": "Irene Kral  was known for putting emotion and subtlety into her work. \ Kral was a jazz singer that debuted with the Jay Burkhardt Big Band and freelanced, she spent nine months singing with Maynard Ferguson's big band in 1957. \ She tragically passed from cancer in her late 40s."
+    },
+    {
+        "id": 11,
+        "name": "Billie Holiday",
+        "image": "images/placeholder.png",
+        "information": "A popular jazz singer who debuted around 1931, Billie Holiday is well known among today's youth for her song \"I'll Be Seeing You\". \ Her best performances are \"Lover Man\", \"Don't Explain\", \"Strange Fruit\", and \"God Bless the Child\". "
+    },
+    {
+        "id": 12,
+        "name": "Joe Hisaishi",
+        "image": "images/placeholder.png",
+        "information": "Best known for his works for Ghibli films, Joe Hisaishi is a Japanese composer with almost 100 film scores and solo albums. \ His works have been included in films such as \"Spirited Away\" and \"Howl's Moving Castle\"."
     }
 ];

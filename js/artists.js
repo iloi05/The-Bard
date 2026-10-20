@@ -68,7 +68,7 @@ var artists = [
     {
         "id": 12,
         "name": "Joe Hisaishi",
-        "image": "images/placeholder.png",
+        "image": "images/joe_hisaishi.jpg",
         "information": "Best known for his works for Ghibli films, Joe Hisaishi is a Japanese composer with almost 100 film scores and solo albums. \ His works have been included in films such as \"Spirited Away\" and \"Howl's Moving Castle\"."
     }
 ];

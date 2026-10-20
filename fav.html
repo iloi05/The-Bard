@@ -36,11 +36,11 @@
             padding: 0 40px;
         }
 
-        .image-container {
-            width: 250px;
-        }
         .image-container img {
             display:block;
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
         }
         .heart-container {
             display: flex;
@@ -155,7 +155,7 @@
                 artistBox.className = "artist-box";
                 artistBox.innerHTML = `
                     <div class="image-container">
-                        <img src="${artist.image}" width="250" alt="${artist.name}">
+                        <img src="${artist.image}" alt="${artist.name}">
                     </div>
                     <div class="artist-info">
                         <p><b>${artist.name}</b></p>

@@ -39,8 +39,9 @@
         }
         .image-container img {
             display:block;
-            width:100%;
-            height:auto;
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
         }
         .heart-container {
             display: flex;
@@ -161,7 +162,7 @@
                 container.innerHTML += `
                     <div class="artist-box">
                         <div class="image-container">
-                            <img src="${artist.image}" width="250">
+                            <img src="${artist.image}">
                         </div>
                         <div class="artist-info">
                             <p><b>${artist.name}</b></p>

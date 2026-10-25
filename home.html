@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
             background-color: rgb(249, 243, 188);
@@ -14,9 +15,17 @@
             font-family:'Trebuchet MS';
             font-size: larger;
 
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
+            position: sticky;
+            top: 0;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            text-align: left;
         }
         .nav a,
         .nav a:visited {
@@ -26,6 +35,61 @@
             color:rgb(227, 212, 80);
             margin: 0 10px;
         }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+            margin-left: 50px;
+        }
+        #search-input {
+            width: 100%;
+            background-color: white;
+            color: rgb(51, 99, 51);
+            font-size: 16px;
+            box-sizing: border-box;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 2px;
+            outline: none;
+        }
+        #search-input:focus {
+            background-color: rgb(249, 243, 188);
+        }
+        #search-button {
+            width: 35px;
+            height: 35px;
+            background-color: rgb(249, 243, 188);
+            color: rgb(51, 99, 51);
+            font-size: 16px;
+            border: none;
+            border-radius: 2px;
+            margin-left: 3px;
+        }
+        #search-button:hover {
+            background-color: rgb(238, 225, 110);
+        }
+        .search-dropdown {
+            background-color: white;
+            font-size: 16px;
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 2px;
+        }
+        .search-dropdown.open {
+            display: block;
+        }
+        .search-result {
+            color: rgb(51, 99, 51);
+            padding: 10px 15px;
+        }
+        .search-result:hover {
+            background-color: rgb(249, 243, 188);
+        }
         .container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -33,7 +97,6 @@
             margin-top: 40px;
             padding: 0 100px;
         }
-
         .image-container {
             width:100%
         }
@@ -79,6 +142,9 @@
         }
         .artist-info p {
             margin-bottom: 5px;
+        }
+        .artist-box {
+            scroll-margin-top: 100px;
         }
         .artist-box > p {
             width: 100%;
@@ -130,9 +196,21 @@
         </script>
         <!-- navigation bar-->
         <div class="nav">
-            <a href="home.html">
-                <img src="images/logo.png" width="150">
-            </a>
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="images/logo.png" width="150">
+                </a>
+                
+                <!--search bar-->
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="Search artists...">
+                    <div class="search-dropdown" id="search-dropdown"></div>
+                </div>
+                <button type="button" id="search-button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+
             <div>Home</div>
             <div class="nava">
                 <a href="home.html">Home ⌂︎</a> |
@@ -160,7 +238,7 @@
             const container = document.getElementById("artists-container");
             artists.forEach(artist => {
                 container.innerHTML += `
-                    <div class="artist-box">
+                    <div class="artist-box" id="artist-${artist.id}">
                         <div class="image-container">
                             <img src="${artist.image}">
                         </div>
@@ -175,6 +253,77 @@
                     </div>   
                 `;
             });
-        </script>  
+        </script>
+        
+        <!--implements search bar-->
+        <script>
+            const searchBar = document.getElementById("search-input");
+            const dropdown = document.getElementById("search-dropdown");
+            const searchButton = document.getElementById("search-button");
+
+            function searchArtists() {
+                const query = searchBar.value.trim().toLowerCase();
+                let search = [];
+                if (query) {
+                    search = artists.filter(artist => artist.name.toLowerCase().includes(query));
+                }
+                return search;
+            }
+
+            function clearSearch() {
+                searchBar.value = "";
+                dropdown.innerHTML = "";
+                dropdown.classList.remove("open");
+            }
+
+            function submitSearch() {
+                const results = searchArtists();
+                if (results.length > 0) {
+                    goToArtist(results[0].id);
+                } else {
+                    clearSearch();
+                }
+            }
+
+            function goToArtist(id) {
+                document.getElementById("artist-" + id)?.scrollIntoView({ behavior: "smooth" });
+                clearSearch();
+            }
+
+            searchBar.addEventListener("input", () => {
+                const results = searchArtists();
+                dropdown.innerHTML = "";
+                dropdown.classList.toggle("open", searchBar.value.trim() !== "");
+                if (results.length !== 0) {
+                    results.forEach(artist => {
+                        const result = document.createElement("div");
+                        result.className = "search-result";
+                        result.textContent = artist.name;
+                        result.dataset.id = artist.id;
+                        dropdown.appendChild(result);
+                    });
+                }
+            });
+
+           searchBar.addEventListener("keydown", e => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    submitSearch();
+                }
+            });
+
+            dropdown.addEventListener("click", e => {
+                const result = e.target.closest(".search-result");
+                if (result) goToArtist(result.dataset.id);
+            });
+
+            searchButton.addEventListener("click", submitSearch);
+
+            document.addEventListener("click", e => {
+               if (!dropdown.contains(e.target) && e.target !== searchBar) {
+                    clearSearch();
+                }
+            });
+        </script>
     </body>
 </html>

@@ -31,7 +31,7 @@ var artists = [
     },
     {
         "id": 6,
-        "name": "Céline Dion",
+        "name": "Celine Dion",
         "image": "images/celine_dion.jpg",
         "information": "Known as the \"Queen of Power Ballads\", Dion has powerful and skilled vocals. Her song \"My Heart Will Go On\" won four Grammy awards and is one of the best selling singles of all time. She has sold over 200 million records, making her one of the best selling musical acts of all time."
     },

@@ -137,7 +137,7 @@
             }
         </script>
         <div class="nav">
-            <a href="home.html" class="logo">
+            <a href="{{ url_for('home') }}" class="logo">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
             </a>
             <div>Home</div>
@@ -161,7 +161,8 @@
                     <p><b>{{ artist.name }}</b></p>
                     
                 </div>
-                <p>{{ artist.information }}</p>
+                <p>{{ artist.country or 'Unknown' }}</p>
+                <p>{{ artist.type or 'Unknown' }}</p>
             </div>
             {% endfor %}
         </div>

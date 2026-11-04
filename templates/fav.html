@@ -89,7 +89,7 @@
 </head>
     <body>
         <div class="nav">
-            <a href="home.html">
+            <a href="{{ url_for('home') }}" class="logo">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
             </a>
             <div>Favorites</div>
@@ -99,16 +99,10 @@
             </div>
         </div>
         <div class="container" id="favorites-container"></div>
-        <script id="artists-data" type="application/json">
-            {{ artists | tojson }}
-        </script>
         <script>
             const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-            const favoriteIds = favorites.map(favorite => String(favorite.id));
-            const artists = JSON.parse(document.getElementById("artists-data").textContent);
-            const favoriteArtists = artists.filter(artist => favoriteIds.includes(String(artist.id)));
             const container = document.getElementById("favorites-container");
-            favoriteArtists.forEach(artist => {
+            favorites.forEach(artist => {
                 container.innerHTML += `
                     <div class="artist-box">
                         <div class="image-container">
@@ -117,7 +111,7 @@
                                 <button 
                                     class="favorite-button"
                                     type="button"
-                                    onclick="removeFromFavorites(${artist.id})">
+                                    onclick="removeFromFavorites('${artist.id}')">
                                     ♥
                                 </button>
                             </div>
@@ -126,11 +120,10 @@
                             <p><b>${artist.name}</b></p>
                             
                         </div>
-                        <p>${artist.information}</p>
                     </div>
                 `;
             });
-            if (favoriteArtists.length === 0) {
+            if (favorites.length === 0) {
                 container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
             }
             function removeFromFavorites(artistId) {

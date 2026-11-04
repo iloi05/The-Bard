@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            background-color: rgb(249, 243, 188);
+            margin: 0;
+        }
+        .nav {
+            background-color: rgb(51, 99, 51);
+            color:rgb(249, 243, 188);
+            text-align: right;
+            padding: 10px 10px;
+            font-family:'Trebuchet MS';
+            font-size: larger;
+
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            text-align: left;
+        }
+        .nav a,
+        .nav a:visited {
+            color:rgb(249, 243, 188);
+        }
+        .nav a:hover {
+            color:rgb(227, 212, 80);
+            margin: 0 10px;
+        }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+            margin-left: 50px;
+        }
+        #search-input {
+            width: 100%;
+            background-color: white;
+            color: rgb(51, 99, 51);
+            font-size: 16px;
+            box-sizing: border-box;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 2px;
+            outline: none;
+        }
+        #search-input:focus {
+            background-color: rgb(249, 243, 188);
+        }
+        #search-button {
+            width: 35px;
+            height: 35px;
+            background-color: rgb(249, 243, 188);
+            color: rgb(51, 99, 51);
+            font-size: 16px;
+            border: none;
+            border-radius: 2px;
+            margin-left: 3px;
+        }
+        #search-button:hover {
+            background-color: rgb(238, 225, 110);
+        }
+        .search-dropdown {
+            background-color: white;
+            font-size: 16px;
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 2px;
+        }
+        .search-dropdown.open {
+            display: block;
+            box-shadow: 5px 5px 4px rgb(0, 0, 0, 0.1);
+        }
+        .search-result {
+            color: rgb(51, 99, 51);
+            padding: 10px 15px;
+        }
+        .search-result:hover {
+            background-color: rgb(249, 243, 188);
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 100px;
+            margin-top: 40px;
+            padding: 0 100px;
+        }
+        .image-container {
+            width:100%
+        }
+        .image-container img {
+            display:block;
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+        }
+        .heart-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        .favorite-button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid #f13500;
+            background-color: white;
+            
+            color: #f13500;
+            font-size: 22px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+        }
+
+        .favorite-button.favorited {
+            color: #f13500;
+        }
+        .artist-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Trebuchet MS';
+            font-size: 30px;
+        }
+        .artist-info p {
+            margin-bottom: 5px;
+        }
+        .artist-box {
+            scroll-margin-top: 100px;
+        }
+        .artist-box > p {
+            width: 100%;
+            font-family: 'Trebuchet MS';
+            margin-top:5px;
+        }
+    </style>
+    <script src="js/artists.js"></script>
+</head>
+    <body>
+        <!--For the like button functionality -->
+        <script>
+            function getFavorites() {
+                const saved = localStorage.getItem("favorites");
+                return saved ? JSON.parse(saved) : [];
+            }
+            function toggleFavorite(button) {
+                let favorites = getFavorites();
+                const id = button.getAttribute("data-artist-id");
+                const name = button.getAttribute("data-artist-name");
+                const index = favorites.findIndex(fav => fav.id === id);
+                if (index !== -1) {
+                    favorites.splice(index, 1);
+                } else {
+                    favorites.push({ id: id, name: name });
+                }
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                updateFavoriteButtons();
+            }
+            
+            function updateFavoriteButtons() {
+                let favorites = getFavorites();
+                document.querySelectorAll(".favorite-button").forEach(button => {
+                    let artistId = button.getAttribute("data-artist-id");
+                    const isFavorited = favorites.some(fav => fav.id === artistId);
+                    if (isFavorited) {
+                        button.classList.add("favorited");
+                        button.innerHTML = "♥";
+                    } else {
+                        button.classList.remove("favorited");
+                        button.innerHTML = "♡";
+                    }
+                });
+            }
+
+            window.onload = function() {
+                updateFavoriteButtons();
+            }
+        </script>
+        <!-- navigation bar-->
+        <div class="nav">
+            <div class="nav-left">
+                <a href="home.html">
+                    <img src="images/logo.png" width="150">
+                </a>
+                
+                <!--search bar-->
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="Search artists...">
+                    <div class="search-dropdown" id="search-dropdown"></div>
+                </div>
+                <button type="button" id="search-button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+
+            <div>Home</div>
+            <div class="nava">
+                <a href="home.html">Home ⌂︎</a> |
+                <a href="fav.html">Favorites ♡</a>
+            </div>
+        </div>
+
+        <!--header-->
+        <div>
+            <h1 style="font-family: Trebuchet MS; color: rgb(51, 99, 51); margin-left: 100px;
+            margin-bottom:0px">
+                Explore Artists 🎵
+            </h1>
+            <h3 style="font-family: Trebuchet MS; color: rgb(78, 128, 78); margin-left: 100px;
+            margin-top:0px">
+                Discover our featured artists! Browse our collection of over 20 different artists from
+                a variety of genres. Find your new favorite artist today!
+            </h3>
+        </div>
+
+        <!-- displaying artists-->
+        <div class="container" id="artists-container">
+        </div>
+        <script>
+            const container = document.getElementById("artists-container");
+            artists.forEach(artist => {
+                container.innerHTML += `
+                    <div class="artist-box" id="artist-${artist.id}">
+                        <div class="image-container">
+                            <img src="${artist.image}">
+                        </div>
+                        <div class="artist-info">
+                            <p><b>${artist.name}</b></p>
+
+                            <div class="heart-container">
+                                <button class="favorite-button" type="button" data-artist-id="${artist.id}" data-artist-name="${artist.name}" onclick="toggleFavorite(this)">♡</button>
+                            </div>
+                        </div>
+                        <p>${artist.information}</p>
+                    </div>   
+                `;
+            });
+        </script>
+        
+        <!--implements search bar-->
+        <script>
+            const searchBar = document.getElementById("search-input");
+            const dropdown = document.getElementById("search-dropdown");
+            const searchButton = document.getElementById("search-button");
+
+            function searchArtists() {
+                const query = searchBar.value.trim().toLowerCase();
+                let search = [];
+                if (query) {
+                    search = artists.filter(artist => artist.name.toLowerCase().includes(query));
+                }
+                return search;
+            }
+
+            function clearSearch() {
+                searchBar.value = "";
+                dropdown.innerHTML = "";
+                dropdown.classList.remove("open");
+            }
+
+            function submitSearch() {
+                const results = searchArtists();
+                if (results.length > 0) {
+                    goToArtist(results[0].id);
+                } else {
+                    clearSearch();
+                }
+            }
+
+            function goToArtist(id) {
+                document.getElementById("artist-" + id)?.scrollIntoView({ behavior: "smooth" });
+                clearSearch();
+            }
+
+            searchBar.addEventListener("input", () => {
+                const results = searchArtists();
+                dropdown.innerHTML = "";
+                dropdown.classList.toggle("open", searchBar.value.trim() !== "");
+                if (results.length !== 0) {
+                    results.forEach(artist => {
+                        const result = document.createElement("div");
+                        result.className = "search-result";
+                        result.textContent = artist.name;
+                        result.dataset.id = artist.id;
+                        dropdown.appendChild(result);
+                    });
+                }
+            });
+
+           searchBar.addEventListener("keydown", e => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    submitSearch();
+                }
+            });
+
+            dropdown.addEventListener("click", e => {
+                const result = e.target.closest(".search-result");
+                if (result) goToArtist(result.dataset.id);
+            });
+
+            searchButton.addEventListener("click", submitSearch);
+
+            document.addEventListener("click", e => {
+               if (!dropdown.contains(e.target) && e.target !== searchBar) {
+                    clearSearch();
+                }
+            });
+        </script>
+    </body>
+</html>

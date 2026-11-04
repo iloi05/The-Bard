@@ -1,4 +1,4 @@
-#!/root/349/The-Bard/venv/bin/python3
+#!/root/349/The-Bard/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

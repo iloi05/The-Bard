@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/artists.js"></script>
+    <style>
+        body {
+            background-color: rgb(249, 243, 188);
+            margin: 0;     
+        }
+        .nav {
+            background-color: rgb(51, 99, 51);
+            color:rgb(249, 243, 188);
+            text-align: right;
+            padding: 10px 10px;
+            font-family:'Trebuchet MS';
+            font-size: larger;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav a,
+        .nav a:visited {
+            color:rgb(249, 243, 188);
+        }
+        .nav a:hover {
+            color:rgb(227, 212, 80);
+            margin: 0 10px;
+        }
+         .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 40px;
+            margin-top: 80px;
+            padding: 0 40px;
+        }
+
+        .image-container img {
+            display:block;
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+        }
+        .heart-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+        .favorite-button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid #f13500;
+            background-color: white;
+            
+            color: #f13500;
+            font-size: 22px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+        }
+        .artist-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Trebuchet MS';
+            font-size: 30px;
+
+        }
+        .artist-info p {
+            margin-bottom: 5px;
+        }
+        .artist-box > p {
+            margin-top: 0;
+        }
+        .empty-message {
+            width: 100%;
+            text-align: center;
+        }
+        .info-btn {
+            font-family: 'Trebuchet MS';
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        dialog {
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+           
+            border: none;
+            border-radius: 10px;
+            padding: 40px 20px 20px;
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+        }
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .close-btn {
+            font-family: 'Trebuchet MS';
+            font-size: 16px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        dialog p {
+            padding-top: 5px;
+            font-family: 'Trebuchet MS';
+            font-size: 20px;
+        }
+    </style>
+</head>
+    <body>
+        <!-- Navigation bar -->
+        <div class="nav">
+            <a href="home.html">
+                <img src="images/logo.png" width="150">
+            </a>
+            <div>Favorites</div>
+            <div class="nava">
+                <a href="home.html">Home ⌂︎</a> |
+                <a href="fav.html">Favorites ♡</a>
+            </div>
+        </div>
+        <div class="container" id="favorites-container"></div>
+        <script>
+            // Fetches artists that have been favorited by the user
+            const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+            const favoriteIds = favorites.map(favorite => String(favorite.id));
+            const favartists = artists.filter(artist => favoriteIds.includes(String(artist.id)));
+            // For loop that displays all favorited artists
+            const container = document.getElementById("favorites-container");
+            favartists.forEach(artist => {
+                const artistBox = document.createElement("div");
+                artistBox.className = "artist-box";
+                artistBox.innerHTML = `
+                    <div class="image-container">
+                        <img src="${artist.image}" alt="${artist.name}">
+                    </div>
+                    <div class="artist-info">
+                        <p><b>${artist.name}</b></p>
+                        <div class="heart-container">
+                            <button class="favorite-button" type="button">
+                                ♥
+                            </button>
+                        </div>
+                    </div>
+                    <button class="info-btn" type="button">Info</button>
+                `;
+                // Favorites button click behavior (unfavorited if clicked)
+                artistBox.querySelector(".favorite-button").addEventListener("click", () => {
+                    removeFromFavorites(artist.id);
+                });
+                // Info button click behavior (displays artist information)
+                artistBox.querySelector(".info-btn").addEventListener("click", () => {
+                    showInfo(artist.information);
+                });
+
+                container.appendChild(artistBox);
+            });
+
+            // Display a message if no artists have been favorited
+            if (favartists.length === 0) {
+                container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
+            }
+            function removeFromFavorites(artistId) {
+                let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+                favorites = favorites.filter(
+                    favorite => String(favorite.id) !== String(artistId)
+                );
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                location.reload();
+            }
+        </script>
+        <script>
+            // Function to display artist information in a dialog box
+            function showInfo(info) {
+                const dialog = document.createElement("dialog");
+                dialog.innerHTML = `
+                    <p></p>
+                    <button class="close-btn" type="button">Close</button>
+                `;
+                dialog.querySelector("p").textContent = info;
+                const closeButton = dialog.querySelector(".close-btn");
+                closeButton.addEventListener("click", () => {
+                    dialog.close(); 
+                    dialog.remove();
+                });
+                document.body.appendChild(dialog);
+                dialog.showModal();
+            }
+        </script>
+    </body>
+     
+</html>

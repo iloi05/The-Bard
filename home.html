@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>The Bard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             background-color: rgb(249, 243, 188);
+            color:rgb(51, 99, 51);
             margin: 0;
+            font-family: 'Trebuchet MS';
         }
         .nav {
             background-color: rgb(51, 99, 51);
             color:rgb(249, 243, 188);
             text-align: right;
             padding: 10px 10px;
-            font-family:'Trebuchet MS';
             font-size: larger;
 
             display: grid;
@@ -24,8 +29,6 @@
         .nav-left {
             display: flex;
             align-items: center;
-            min-width: 0;
-            text-align: left;
         }
         .nav a,
         .nav a:visited {
@@ -33,298 +36,179 @@
         }
         .nav a:hover {
             color:rgb(227, 212, 80);
-            margin: 0 10px;
         }
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-            max-width: 350px;
-            margin-left: 50px;
-        }
-        #search-input {
-            width: 100%;
-            background-color: white;
-            color: rgb(51, 99, 51);
-            font-size: 16px;
+        .welcome {
+            text-align: center;
+            padding: 40px 20px 60px;
+            min-height: 85vh;
             box-sizing: border-box;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 2px;
-            outline: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        #search-input:focus {
-            background-color: rgb(249, 243, 188);
+        .welcome p {
+            font-size: 20px;
+            max-width: 650px;
+            margin: 0 auto 30px;
         }
-        #search-button {
-            width: 35px;
-            height: 35px;
-            background-color: rgb(249, 243, 188);
+        .explore-button,
+        .favorites-button {
+            display: inline-block;
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 28px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .explore-button:hover {
+            background-color: rgb(78, 128, 78);
+        }
+        .favorites-button {
+            background-color: transparent;
             color: rgb(51, 99, 51);
-            font-size: 16px;
-            border: none;
-            border-radius: 2px;
-            margin-left: 3px;
+            border: 2px solid rgb(51, 99, 51);
+            padding: 10px 26px;
         }
-        #search-button:hover {
+        .favorites-button:hover {
             background-color: rgb(238, 225, 110);
         }
-        .search-dropdown {
-            background-color: white;
-            font-size: 16px;
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 500px;
-            overflow-y: auto;
-            border-radius: 2px;
-        }
-        .search-dropdown.open {
-            display: block;
-            box-shadow: 5px 5px 4px rgb(0, 0, 0, 0.1);
-        }
-        .search-result {
-            color: rgb(51, 99, 51);
-            padding: 10px 15px;
-        }
-        .search-result:hover {
-            background-color: rgb(249, 243, 188);
-        }
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 100px;
+        .down-arrow {
             margin-top: 40px;
-            padding: 0 100px;
+            font-size: 32px;
+            color: rgb(78, 128, 78);
         }
-        .image-container {
-            width:100%
+        .down-arrow:hover {
+            color: rgb(51, 99, 51);
         }
-        .image-container img {
-            display:block;
-            width: 500px;
-            height: 500px;
-            object-fit: cover;
+        .about-section {
+            padding: 10px 100px 0px;
+            font-size: 32px;
+            margin: 0 0 25px;
         }
-        .heart-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 5px;
+        .features-section {
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            padding: 10px 100px 60px;
+            font-size: 32px;
+            scroll-margin-top: 75px;
         }
-        .favorite-button {
-            width: 30px;
-            height: 30px;
-            padding: 0;
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        .feature-box {
+            text-align: center;
+        }
+        .feature-box .icon {
+            font-size: 40px;
+            color: rgb(227, 212, 80);
+        }
+        .feature-box h3 {
+            font-size: 25px;
+            margin: 10px 0 5px;
+        }
+        .feature-box p {
+            font-size: 20px;
+            margin: 0;
+        }
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .about p {
+            font-size: 20px;
+            line-height: 1.5;
+            margin: 0 0 20px;
+        }
+        .about-art {
+            aspect-ratio: 1 / 1;
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
             border-radius: 50%;
-            border: 1px solid #f13500;
-            background-color: white;
-            
-            color: #f13500;
-            font-size: 22px;
-
+            background-color: rgb(51, 99, 51);
+            color: rgb(227, 212, 80);
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-
-            cursor: pointer;
-        }
-
-        .favorite-button.favorited {
-            color: #f13500;
-        }
-        .artist-info {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Trebuchet MS';
-            font-size: 30px;
-        }
-        .artist-info p {
-            margin-bottom: 5px;
-        }
-        .artist-box {
-            scroll-margin-top: 100px;
-        }
-        .artist-box > p {
-            width: 100%;
-            font-family: 'Trebuchet MS';
-            margin-top:5px;
+            font-size: 200px;
         }
     </style>
-    <script src="js/artists.js"></script>
 </head>
     <body>
-        <!--For the like button functionality -->
-        <script>
-            function getFavorites() {
-                const saved = localStorage.getItem("favorites");
-                return saved ? JSON.parse(saved) : [];
-            }
-            function toggleFavorite(button) {
-                let favorites = getFavorites();
-                const id = button.getAttribute("data-artist-id");
-                const name = button.getAttribute("data-artist-name");
-                const index = favorites.findIndex(fav => fav.id === id);
-                if (index !== -1) {
-                    favorites.splice(index, 1);
-                } else {
-                    favorites.push({ id: id, name: name });
-                }
-                localStorage.setItem("favorites", JSON.stringify(favorites));
-                updateFavoriteButtons();
-            }
-            
-            function updateFavoriteButtons() {
-                let favorites = getFavorites();
-                document.querySelectorAll(".favorite-button").forEach(button => {
-                    let artistId = button.getAttribute("data-artist-id");
-                    const isFavorited = favorites.some(fav => fav.id === artistId);
-                    if (isFavorited) {
-                        button.classList.add("favorited");
-                        button.innerHTML = "♥";
-                    } else {
-                        button.classList.remove("favorited");
-                        button.innerHTML = "♡";
-                    }
-                });
-            }
-
-            window.onload = function() {
-                updateFavoriteButtons();
-            }
-        </script>
         <!-- navigation bar-->
         <div class="nav">
             <div class="nav-left">
                 <a href="home.html">
                     <img src="images/logo.png" width="150">
                 </a>
-                
-                <!--search bar-->
-                <div class="search-wrapper">
-                    <input type="text" id="search-input" placeholder="Search artists...">
-                    <div class="search-dropdown" id="search-dropdown"></div>
-                </div>
-                <button type="button" id="search-button">
-                    <i class="fa fa-search"></i>
-                </button>
             </div>
 
             <div>Home</div>
-            <div class="nava">
+            <div>
                 <a href="home.html">Home ⌂︎</a> |
+                <a href="explore.html">Explore ♪</a> |
                 <a href="fav.html">Favorites ♡</a>
             </div>
         </div>
 
-        <!--header-->
-        <div>
-            <h1 style="font-family: Trebuchet MS; color: rgb(51, 99, 51); margin-left: 100px;
-            margin-bottom:0px">
-                Explore Artists 🎵
-            </h1>
-            <h3 style="font-family: Trebuchet MS; color: rgb(78, 128, 78); margin-left: 100px;
-            margin-top:0px">
-                Discover our featured artists! Browse our collection of over 20 different artists from
-                a variety of genres. Find your new favorite artist today!
-            </h3>
+        <!--welcome text-->
+        <div class="welcome">
+            <img src="images/logo.png" width="700px">
+            <h1>The home for music lovers</h1>
+            <p>
+                Discover your new favorite artist! Browse our collection of artists or search for one you know. Learn more about the artists behind your favorite songs. Use our Favorites page to never lose an artist again!
+            </p>
+            <a class="explore-button" href="explore.html">Explore Artists</a>
+            <a class="favorites-button" href="fav.html">Favorites</a>
+            <a class="down-arrow" href="#our-features"><i class="fa fa-chevron-down"></i></a>
         </div>
 
-        <!-- displaying artists-->
-        <div class="container" id="artists-container">
+        <!--features section-->
+        <div class="features-section" id="our-features">
+            <h2>Our features</h2>
+            <div class="features">
+                <div class="feature-box">
+                    <div class="icon"><i class="fa fa-compass"></i></div>
+                    <h3>Explore</h3>
+                    <p>Discover our collection of featured artists, including hidden gems and all-time greats.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon"><i class="fa fa-id-card-o"></i></div>
+                    <h3>Learn</h3>
+                    <p>Read the stories and history behind artists and their music.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon"><i class="fa fa-heart"></i></div>
+                    <h3>Favorite</h3>
+                    <p>Save your favorite artists to our Favorites page. View your collection of favorites any time!</p>
+                </div>
+            </div>
         </div>
-        <script>
-            const container = document.getElementById("artists-container");
-            artists.forEach(artist => {
-                container.innerHTML += `
-                    <div class="artist-box" id="artist-${artist.id}">
-                        <div class="image-container">
-                            <img src="${artist.image}">
-                        </div>
-                        <div class="artist-info">
-                            <p><b>${artist.name}</b></p>
 
-                            <div class="heart-container">
-                                <button class="favorite-button" type="button" data-artist-id="${artist.id}" data-artist-name="${artist.name}" onclick="toggleFavorite(this)">♡</button>
-                            </div>
-                        </div>
-                        <p>${artist.information}</p>
-                    </div>   
-                `;
-            });
-        </script>
-        
-        <!--implements search bar-->
-        <script>
-            const searchBar = document.getElementById("search-input");
-            const dropdown = document.getElementById("search-dropdown");
-            const searchButton = document.getElementById("search-button");
-
-            function searchArtists() {
-                const query = searchBar.value.trim().toLowerCase();
-                let search = [];
-                if (query) {
-                    search = artists.filter(artist => artist.name.toLowerCase().includes(query));
-                }
-                return search;
-            }
-
-            function clearSearch() {
-                searchBar.value = "";
-                dropdown.innerHTML = "";
-                dropdown.classList.remove("open");
-            }
-
-            function submitSearch() {
-                const results = searchArtists();
-                if (results.length > 0) {
-                    goToArtist(results[0].id);
-                } else {
-                    clearSearch();
-                }
-            }
-
-            function goToArtist(id) {
-                document.getElementById("artist-" + id)?.scrollIntoView({ behavior: "smooth" });
-                clearSearch();
-            }
-
-            searchBar.addEventListener("input", () => {
-                const results = searchArtists();
-                dropdown.innerHTML = "";
-                dropdown.classList.toggle("open", searchBar.value.trim() !== "");
-                if (results.length !== 0) {
-                    results.forEach(artist => {
-                        const result = document.createElement("div");
-                        result.className = "search-result";
-                        result.textContent = artist.name;
-                        result.dataset.id = artist.id;
-                        dropdown.appendChild(result);
-                    });
-                }
-            });
-
-           searchBar.addEventListener("keydown", e => {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    submitSearch();
-                }
-            });
-
-            dropdown.addEventListener("click", e => {
-                const result = e.target.closest(".search-result");
-                if (result) goToArtist(result.dataset.id);
-            });
-
-            searchButton.addEventListener("click", submitSearch);
-
-            document.addEventListener("click", e => {
-               if (!dropdown.contains(e.target) && e.target !== searchBar) {
-                    clearSearch();
-                }
-            });
-        </script>
+        <!--about section-->
+        <div class="about-section">
+            <h2>About Us</h2>
+            <div class="about">
+                <div>
+                    <p>
+                        Our mission is to create a space to help fans grow their love for music. The Bard aims to support music lovers and artists alike by facilitating the connection between musicians and fans. Discover, learn, and favorite artists!
+                    </p>
+                    <p>
+                        Visit our Explore page to discover and search for artists, then save them to our Favorites page to create a collection of your favorite artists.
+                    </p>
+                </div>
+                <div class="about-art"><i class="fa fa-music"></i></div>
+            </div>
+        </div>
     </body>
 </html>

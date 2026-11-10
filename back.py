@@ -36,5 +36,19 @@ def home():
 def favorites_page():
     return render_template("fav.html")
 
+def get_artist_image(artist_name):
+    url = "https://www.theaudiodb.com/api/v1/json/123/search.php"
+    params = {"s": artist_name}
+    
+    response = requests.get(url, params=params, timeout=10)
+    response.raise_for_status()
+    data = response.json()
+    artists = data.get("artists")
+    
+    if not artists:
+        return None
+
+    return artists[0].get("strArtistThumb")
+
 if __name__ == '__main__':
     app.run(debug = True)

@@ -21,7 +21,7 @@ def search_artists(search_term, offset=0):
     params = {
         "query": query,
         "fmt": "json",
-        "limit": 25,
+        "limit": 24,
         "offset": offset
     }
     response = requests.get(url, headers=HEADERS, params=params, timeout=10)

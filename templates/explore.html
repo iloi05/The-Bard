@@ -10,17 +10,19 @@
             font-family:'Trebuchet MS';
         }
         .nav {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            box-sizing: border-box;
+            width: 100%;
             background-color: rgb(51, 99, 51);
             color:rgb(249, 243, 188);
             text-align: right;
             padding: 10px 10px;
             font-size: larger;
-
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             position: sticky;
             top: 0;
+            z-index: 1000;
         }
         .nav-left {
             display: flex;
@@ -94,18 +96,21 @@
         }
         .container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 100px;
+            grid-template-columns: repeat(3, minmax(0, 400px));
+            gap: 40px;
+            justify-content: center;
             margin-top: 40px;
-            padding: 0 100px;
+            padding: 0 20px;
         }
         .image-container {
-            width:100%
+            position: relative;
+            width: 100%;
         }
         .image-container img {
             display:block;
-            width: 500px;
-            height: 500px;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 /1;
             object-fit: cover;
         }
         .heart-container {
@@ -114,15 +119,18 @@
             margin-top: 5px;
         }
         .favorite-button {
-            width: 30px;
-            height: 30px;
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
             padding: 0;
             border-radius: 50%;
             border: 1px solid #f13500;
             background-color: white;
             
             color: #f13500;
-            font-size: 22px;
+            font-size: 26px;
 
             display: flex;
             justify-content: center;
@@ -150,6 +158,16 @@
         .artist-box > p {
             width: 100%;
             margin-top:5px;
+        }
+        @media (max-width: 1000px) {
+            .container {
+                grid-template-columns: repeat(2, minmax(0, 400px));
+            }
+        }
+        @media (max-width: 650px) {
+            .container {
+                grid-template-columns: minmax(0, 400px);
+            }
         }
     </style>
 </head>
@@ -238,16 +256,14 @@
             <div class="artist-box" id="artist-{{ artist.id }}">
                 <div class="image-container">
                     <img src="{{ artist.image or url_for('static', filename='images/placeholder.png') }}" alt="{{ artist.name }}">
+                    <button class="favorite-button" type="button"
+                    data-artist-id="{{ artist.id }}"
+                    data-artist-name="{{ artist.name }}"
+                    data-artist-image="{{ artist.image or '' }}"
+                    onclick="toggleFavorite(this)">♡</button>
                 </div>
                 <div class="artist-info">
                     <p><b>{{ artist.name }}</b></p>
-                    <div class="heart-container">
-                        <button class="favorite-button" type="button"
-                        data-artist-id="{{ artist.id }}"
-                        data-artist-name="{{ artist.name }}"
-                        data-artist-image="{{ artist.image or '' }}"
-                        onclick="toggleFavorite(this)">♡</button>
-                    </div>
                 </div>
                 <p>{{ artist.country or 'Unknown' }} · {{ artist.type or 'Unknown' }}</p>
             </div>

@@ -153,12 +153,12 @@
            {% for artist in artists %}
            <div class="artist-box">
                 <div class="image-container">
-                    <img src="{{ artist.image }}" alt="{{ artist.name }}">
+                    <img src="{{ artist.image or url_for('static', filename='images/placeholder.png') }}" alt="{{ artist.name }}">
                     <div class="heart-container">
                         <button class="favorite-button" type="button"
                         data-artist-id="{{ artist.id }}"
                         data-artist-name="{{ artist.name }}"
-                        data-artist-image="{{ artist.image }}"
+                        data-artist-image="{{ artist.image or '' }}"
                         onclick="toggleFavorite(this)">♡</button>
                     </div>
                 </div>

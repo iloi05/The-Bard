@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, jsonify
-from functools import lru_cache
+from flask import Flask, render_template, request
 from concurrent.futures import ThreadPoolExecutor
 import requests
 
@@ -10,7 +9,7 @@ HEADERS = {
 }
 
 MUSICIAN_TYPES = "(type:person OR type:group OR type:orchestra OR type:choir)"
-DEFAULT_QUERY = f'{MUSICIAN_TYPES} AND (tag:rock OR tag:pop OR tag:jazz or tag:"hip hop" OR tag:country OR tag: electronic)'
+DEFAULT_QUERY = f'{MUSICIAN_TYPES} AND (tag:rock OR tag:pop OR tag:jazz OR tag:"hip hop" OR tag:country OR tag:electronic)'
 
 def search_artists(search_term, offset=0):
     url = "https://musicbrainz.org/ws/2/artist/"
@@ -30,9 +29,11 @@ def search_artists(search_term, offset=0):
     data = response.json()
     return data["artists"], data["count"]
 
-@lru_cache(maxsize=512)
+_image_cache = {}
 
 def get_artist_image(artist_name):
+    if artist_name in _image_cache:
+        return _image_cache[artist_name]
     try:
         response = requests.get(
             "https://www.theaudiodb.com/api/v1/json/123/search.php",
@@ -45,6 +46,7 @@ def get_artist_image(artist_name):
         return None
     
     image = artists[0].get("strArtistThumb") if artists else None
+    _image_cache[artist_name] = image
     return image
 
 @app.route("/")
@@ -62,7 +64,7 @@ def home():
     for artist, image in zip(artists, images):
         artist["image"] = image
 
-    artists = [a for a in artists if a["image"]]
+    print("after image filter:", len(artists))
     return render_template("home.html", artists=artists, search_term=search_term, total=tot, offset=offset)
 
 @app.route("/favorites")

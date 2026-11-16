@@ -107,11 +107,12 @@
                 let favorites = getFavorites();
                 const id = button.getAttribute("data-artist-id");
                 const name = button.getAttribute("data-artist-name");
+                const image = button.getAttribute("data-artist-image");
                 const index = favorites.findIndex(fav => fav.id === id);
                 if (index !== -1) {
                     favorites.splice(index, 1);
                 } else {
-                    favorites.push({ id: id, name: name });
+                    favorites.push({ id: id, name: name, image: image });
                 }
                 localStorage.setItem("favorites", JSON.stringify(favorites));
                 updateFavoriteButtons();
@@ -154,7 +155,11 @@
                 <div class="image-container">
                     <img src="{{ artist.image }}" alt="{{ artist.name }}">
                     <div class="heart-container">
-                        <button class="favorite-button" type="button" data-artist-id="{{ artist.id }}" data-artist-name="{{ artist.name }}" onclick="toggleFavorite(this)">♡</button>
+                        <button class="favorite-button" type="button"
+                        data-artist-id="{{ artist.id }}"
+                        data-artist-name="{{ artist.name }}"
+                        data-artist-image="{{ artist.image }}"
+                        onclick="toggleFavorite(this)">♡</button>
                     </div>
                 </div>
                 <div class="artist-info">

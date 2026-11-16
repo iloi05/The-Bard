@@ -102,11 +102,13 @@
         <script>
             const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
             const container = document.getElementById("favorites-container");
+            const placeholder = "{{ url_for('static', filename='images/placeholder.png') }}";
+
             favorites.forEach(artist => {
                 container.innerHTML += `
                     <div class="artist-box">
                         <div class="image-container">
-                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" width="250" alt="${artist.name}">
+                            <img src="${artist.image || placeholder}" width="250" alt="${artist.name}">
                             <div class="heart-container">
                                 <button 
                                     class="favorite-button"

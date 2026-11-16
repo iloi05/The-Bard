@@ -22,7 +22,7 @@ def search_artists(search_term, offset=0):
     params = {
         "query": query,
         "fmt": "json",
-        "limit": 50,
+        "limit": 25,
         "offset": offset
     }
     response = requests.get(url, headers=HEADERS, params=params, timeout=10)
@@ -57,7 +57,7 @@ def home():
         print("MusicBrainz error:", e)
         artists, tot = [], 0
     print("from MusicBrainz:", len(artists))
-    with ThreadPoolExecutor(max_workers=5) as pool:
+    with ThreadPoolExecutor(max_workers=3) as pool:
         images = list(pool.map(get_artist_image, [a["name"] for a in artists]))
     for artist, image in zip(artists, images):
         artist["image"] = image

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from concurrent.futures import ThreadPoolExecutor
 import requests
 
@@ -51,6 +51,10 @@ def get_artist_image(artist_name):
 
 @app.route("/")
 def home():
+    return render_template("home.html")
+
+@app.route("/explore")
+def explore_page():
     search_term = request.args.get("q", "").strip()
     offset = int(request.args.get("offset", 0))
     try:
@@ -58,18 +62,12 @@ def home():
     except requests.RequestException as e:
         print("MusicBrainz error:", e)
         artists, tot = [], 0
-    print("from MusicBrainz:", len(artists))
     with ThreadPoolExecutor(max_workers=3) as pool:
         images = list(pool.map(get_artist_image, [a["name"] for a in artists]))
     for artist, image in zip(artists, images):
         artist["image"] = image
 
-    print("after image filter:", len(artists))
-    return render_template("home.html", artists=artists, search_term=search_term, total=tot, offset=offset)
-
-@app.route("/explore")
-def explore_page():
-    return render_template("explore.html")
+    return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset)
 
 @app.route("/favorites")
 def favorites_page():

@@ -152,7 +152,6 @@
             margin-top:5px;
         }
     </style>
-    <script src="{{ url_for('static', filename='js/artists.js') }}"></script>
 </head>
     <body>
         <!--For the like button functionality -->
@@ -165,11 +164,12 @@
                 let favorites = getFavorites();
                 const id = button.getAttribute("data-artist-id");
                 const name = button.getAttribute("data-artist-name");
+                const image = button.getAttribute("data-artist-image");
                 const index = favorites.findIndex(fav => fav.id === id);
                 if (index !== -1) {
                     favorites.splice(index, 1);
                 } else {
-                    favorites.push({ id: id, name: name });
+                    favorites.push({ id: id, name: name, image: image });
                 }
                 localStorage.setItem("favorites", JSON.stringify(favorites));
                 updateFavoriteButtons();
@@ -213,8 +213,8 @@
 
             <div>Explore</div>
             <div>
-                <a href="{{ url_for('explore_page') }}">Explore ♪</a> |
                 <a href="{{ url_for('home') }}">Home ⌂︎</a> |
+                <a href="{{ url_for('explore_page') }}">Explore ♪</a> |
                 <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
             </div>
         </div>
@@ -227,34 +227,41 @@
             </h1>
             <h3 style="color: rgb(78, 128, 78); margin-left: 100px;
             margin-top:0px">
-                Discover our featured artists! Browse our collection of over 20 different artists from
+                Discover our featured artists! Browse our collection of multiple artists from
                 a variety of genres. Find your new favorite artist today!
             </h3>
         </div>
 
         <!-- displaying artists-->
         <div class="container" id="artists-container">
-        </div>
-        <script>
-            const container = document.getElementById("artists-container");
-            artists.forEach(artist => {
-                container.innerHTML += `
-                    <div class="artist-box" id="artist-${artist.id}">
-                        <div class="image-container">
-                            <img src="${artist.image}">
-                        </div>
-                        <div class="artist-info">
-                            <p><b>${artist.name}</b></p>
+            {% for artist in artists %}
+            <div class="artist-box" id="artist-{{ artist.id }}">
+                <div class="image-container">
+                    <img src="{{ artist.image or url_for('static', filename='images/placeholder.png') }}" alt="{{ artist.name }}">
+                </div>
+                <div class="artist-info">
+                    <p><b>{{ artist.name }}</b></p>
+                    <div class="heart-container">
+                        <button class="favorite-button" type="button"
+                        data-artist-id="{{ artist.id }}"
+                        data-artist-name="{{ artist.name }}"
+                        data-artist-image="{{ artist.image or '' }}"
+                        onclick="toggleFavorite(this)">♡</button>
+                    </div>
+                </div>
+                <p>{{ artist.country or 'Unknown' }} · {{ artist.type or 'Unknown' }}</p>
+            </div>
+            {% endfor %}
+            </div>
 
-                            <div class="heart-container">
-                                <button class="favorite-button" type="button" data-artist-id="${artist.id}" data-artist-name="${artist.name}" onclick="toggleFavorite(this)">♡</button>
-                            </div>
-                        </div>
-                        <p>${artist.information}</p>
-                    </div>   
-                `;
-            });
-        </script>
+            <div style="text-align:center; padding: 20px; font-size: larger;">
+                {% if offset > 0 %}
+                    <a href="{{ url_for('explore_page', q=search_term, offset=offset - 25) }}">&larr; Prev</a>
+                {% endif %}
+                {% if offset + 25 < total %}
+                    <a href="{{ url_for('explore_page', q=search_term, offset=offset + 25) }}">Next &rarr;</a>
+                {% endif %}
+            </div>
         
         <!--implements search bar-->
         <script>

@@ -35,107 +35,12 @@
         .nav a:hover {
             color:rgb(227, 212, 80);
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 60px;
-            padding: 20px;
-        }
-
-        .image-container {
-            width: 600px;
-            position: relative;
-        }
-        .image-container img {
-            display:block;
-            width: 100%;
-            height:auto;
-        }
-        .heart-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 5px;
-        }
-        .favorite-button {
-            position: absolute;
-            bottom: 20px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border-radius: 50%;
-            border: 1px solid #f13500;
-            background-color: white;
-            
-            color: #f13500;
-            font-size: 28px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            cursor: pointer;
-        }
-
-        .favorite-button.favorited {
-            color: #f13500;
-        }
-        .artist-info {
-            width: 400px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .artist-info p {
-            margin-bottom: 45px;
-            font-size: 35px;
-        }
-        .artist-box > p {
-            font-size: 25px;
-            margin-top: 0;
-        }
+       .centered-text {
+        text-align: center;
+       }
     </style>
 </head>
     <body>
-        <script>
-            function getFavorites() {
-                const saved = localStorage.getItem("favorites");
-                return saved ? JSON.parse(saved) : [];
-            }
-            function toggleFavorite(button) {
-                let favorites = getFavorites();
-                const id = button.getAttribute("data-artist-id");
-                const name = button.getAttribute("data-artist-name");
-                const image = button.getAttribute("data-artist-image");
-                const index = favorites.findIndex(fav => fav.id === id);
-                if (index !== -1) {
-                    favorites.splice(index, 1);
-                } else {
-                    favorites.push({ id: id, name: name, image: image });
-                }
-                localStorage.setItem("favorites", JSON.stringify(favorites));
-                updateFavoriteButtons();
-            }
-            
-            function updateFavoriteButtons() {
-                let favorites = getFavorites();
-                document.querySelectorAll(".favorite-button").forEach(button => {
-                    let artistId = button.getAttribute("data-artist-id");
-                    const isFavorited = favorites.some(fav => fav.id === artistId);
-                    if (isFavorited) {
-                        button.classList.add("favorited");
-                        button.innerHTML = "♥";
-                    } else {
-                        button.classList.remove("favorited");
-                        button.innerHTML = "♡";
-                    }
-                });
-            }
-
-            window.onload = function() {
-                updateFavoriteButtons();
-            }
         </script>
         <div class="nav">
             <a href="{{ url_for('home') }}" class="logo">
@@ -148,8 +53,12 @@
                 <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
             </div>
         </div>
-
-        
+        <main>
+            <h2 class="centered-text" style="color: rgb(51, 99, 51);
+            margin-bottom:0px; font-size: xx-large">The Bard welcomes you!</h2>
+            <p class="centered-text" style="color: rgb(78, 128, 78);
+            margin-top:0px"><!--Explain website and project here--></p>
+        </main>
         
     </body>
 </html>

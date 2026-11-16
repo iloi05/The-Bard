@@ -67,6 +67,10 @@ def home():
     print("after image filter:", len(artists))
     return render_template("home.html", artists=artists, search_term=search_term, total=tot, offset=offset)
 
+@app.route("/explore")
+def explore_page():
+    return render_template("explore.html")
+
 @app.route("/favorites")
 def favorites_page():
     return render_template("fav.html")

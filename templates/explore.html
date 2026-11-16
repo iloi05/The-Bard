@@ -152,7 +152,7 @@
             margin-top:5px;
         }
     </style>
-    <script src="js/artists.js"></script>
+    <script src="{{ url_for('static', filename='js/artists.js') }}"></script>
 </head>
     <body>
         <!--For the like button functionality -->
@@ -197,8 +197,8 @@
         <!-- navigation bar-->
         <div class="nav">
             <div class="nav-left">
-                <a href="home.html">
-                    <img src="images/logo.png" width="150">
+                <a href="{{ url_for('home') }}">
+                    <img src="{{ url_for('static', filename='images/logo.png')}}" width="150">
                 </a>
                 
                 <!--search bar-->
@@ -213,9 +213,9 @@
 
             <div>Explore</div>
             <div>
-                <a href="home.html">Home ⌂︎</a> |
-                <a href="explore.html">Explore ♪</a> |
-                <a href="fav.html">Favorites ♡</a>
+                <a href="{{ url_for('explore_page') }}">Explore ♪</a> |
+                <a href="{{ url_for('home') }}">Home ⌂︎</a> |
+                <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
             </div>
         </div>
 

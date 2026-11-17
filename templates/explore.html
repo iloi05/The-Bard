@@ -159,6 +159,75 @@
             width: 100%;
             margin-top:5px;
         }
+        .filter-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0 0 100px;
+        }
+        #filter-button {
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            font-family: inherit;
+            font-size: 16px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        #filter-button:hover {
+            background-color: rgb(78, 128, 78);
+        }
+        .filter-panel {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            min-width: 240px;
+            padding: 16px;
+            background-color: white;
+            border-radius: 2px;
+            box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.1);
+            z-index: 500;
+        }
+        .filter-panel.open {
+            display: block;
+        }
+        .filter-panel label {
+            display: block;
+            color: rgb(51, 99, 51);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .filter-panel select {
+            display: block;
+            width: 100%;
+            margin-top: 4px;
+            padding: 8px;
+            font-size: 16px;
+            color: rgb(51, 99, 51);
+            background-color: rgb(249, 243, 188);
+            border: none;
+            border-radius: 2px;
+        }
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .filter-actions button {
+            background-color: rgb(51, 99, 51);
+            color: rgb(249, 243, 188);
+            font-family: inherit;
+            font-size: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .filter-actions a {
+            color: rgb(51, 99, 51);
+        }
         @media (max-width: 1000px) {
             .container {
                 grid-template-columns: repeat(2, minmax(0, 400px));
@@ -250,6 +319,55 @@
             </h3>
         </div>
 
+        <div class="filter-wrapper">
+            <button type="button" id="filter-button">
+                Filter {% set active = [filters.genre, filters.type, filters.role, filters.sort]|select|list|length %}{% if active %} ({{ active }}){% endif %}
+            </button>
+            <form method="get" action="{{ url_for('explore_page') }}" class="filter-panel" id="filter-panel">
+                <input type="hidden" name="q" value="{{ search_term }}">
+
+                <label>Genre
+                    <select name="genre">
+                        <option value="">All genres</option>
+                        {% for g in genres %}
+                        <option value="{{ g }}" {{ 'selected ' if filters.genre == g }}>{{ g|title }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>Type
+                    <select name="type">
+                        <option value="">All types</option>
+                        {% for key, label in types.items() %}
+                        <option value="{{ key }}" {{ 'selected' if filters.type == key }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>Role
+                    <select name="role">
+                        <option value="">Any role</option>
+                        {% for key, label in roles.items() %}
+                        <option value="{{ key }}" {{ 'selected' if filters.role == key }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label>Sort
+                    <select name="sort">
+                        <option value="">Relevance</option>
+                        <option value="az" {{ 'selected' if filters.sort == 'az' }}>A &rarr; Z</option>
+                        <option value="za" {{ 'selected' if filters.sort == 'za' }}>Z &rarr; A</option>
+                    </select>
+                </label>
+
+                <div class="filter-actions">
+                    <button type="submit">Apply</button>
+                    <a href="{{ url_for('explore_page', q=search_term) }}">Clear</a>
+                </div>
+            </form>
+        </div>
+
         <!-- displaying artists-->
         <div class="container" id="artists-container">
             {% for artist in artists %}
@@ -272,13 +390,16 @@
 
             <div style="text-align:center; padding: 20px; font-size: larger;">
                 {% if offset > 0 %}
-                    <a href="{{ url_for('explore_page', q=search_term, offset=offset - 25) }}">&larr; Prev</a>
+                    <a href="{{ url_for('explore_page', offset=offset - pg_size, **filters) }}">&larr; Prev</a>
                 {% endif %}
-                {% if offset + 25 < total %}
-                    <a href="{{ url_for('explore_page', q=search_term, offset=offset + 25) }}">Next &rarr;</a>
+                {% if offset + pg_size < total %}
+                    <a href="{{ url_for('explore_page', offset=offset + pg_size, **filters) }}">Next &rarr;</a>
                 {% endif %}
             </div>
-        
+        <div id="artist-data" data-artists='{{ artists|tojson }}' hidden></div>
+        <script>
+            const artists = JSON.parse(document.getElementById("artist-data").dataset.artists);
+        </script>
         <!--implements search bar-->
         <script>
             const searchBar = document.getElementById("search-input");
@@ -346,6 +467,18 @@
             document.addEventListener("click", e => {
                if (!dropdown.contains(e.target) && e.target !== searchBar) {
                     clearSearch();
+                }
+            });
+            // Filter
+            const filterButton = document.getElementById("filter-button");
+            const filterPanel = document.getElementById("filter-panel");
+
+            filterButton.addEventListener("click", () => {
+                filterPanel.classList.toggle("open");
+            });
+            document.addEventListener("click", e => {
+                if (!filterPanel.contains(e.target) && e.target !== filterButton) {
+                    filterPanel.classList.remove("open");
                 }
             });
         </script>

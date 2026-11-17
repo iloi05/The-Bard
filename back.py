@@ -7,24 +7,43 @@ app = Flask(__name__)
 HEADERS = {
     "User-Agent": "TheBardApp/1.0 ( iloi05@csu.fullerton.edu)"
 }
-
+PG_SIZE = 24
+GENRES = ["rock", "pop", "jazz", "hip hop", "country", "electronic", "classical", "r&b", "metal", "folk"]
+TYPES = {"person": "Solo artist", "group": "Band / group", "orchestra": "Orchestra", "choir": "Choir"}
+ROLES = {"composer": "Composer", "singer-songwriter": "Singer-songwriter", "rapper": "Rapper", "dj": "DJ"}
 MUSICIAN_TYPES = "(type:person OR type:group OR type:orchestra OR type:choir)"
-DEFAULT_QUERY = f'{MUSICIAN_TYPES} AND (tag:rock OR tag:pop OR tag:jazz OR tag:"hip hop" OR tag:country OR tag:electronic)'
+DEFAULT_GENRES = '(tag:rock OR tag:pop OR tag:jazz OR tag:"hip hop" OR tag:country OR tag:electronic)'
 
-def search_artists(search_term, offset=0):
-    url = "https://musicbrainz.org/ws/2/artist/"
+def lucene_escape(text):
+    return text.replace("\\", "\\\\").replace('"', '\\"')
+
+def build_query(search_term, genre, artist_type, role):
+    parts = []
     if search_term:
-        query = f'artist:"{search_term}" AND {MUSICIAN_TYPES}'
-    else:
-        query = DEFAULT_QUERY
+        parts.append(f'artist:"{lucene_escape(search_term)}"')
 
-    params = {
-        "query": query,
-        "fmt": "json",
-        "limit": 24,
-        "offset": offset
-    }
-    response = requests.get(url, headers=HEADERS, params=params, timeout=10)
+    if artist_type in TYPES:
+        parts.append(f"type:{artist_type}")
+    else:
+        parts.append(MUSICIAN_TYPES)
+
+    if genre in GENRES:
+        parts.append(f'tag:"{genre}"')
+    if role in ROLES:
+        parts.append(f'tag:"{role}"')
+
+    if not (search_term or genre or role):
+        parts.append(DEFAULT_GENRES)
+    return " AND ".join(parts)
+
+def search_artists(query, offset=0):
+    response = requests.get(
+        "https://musicbrainz.org/ws/2/artist/",
+        headers=HEADERS,
+        params={"query": query, "fmt": "json",
+                "limit": PG_SIZE, "offset": offset},
+                timeout=10,
+    )
     response.raise_for_status()
     data = response.json()
     return data["artists"], data["count"]
@@ -56,9 +75,15 @@ def home():
 @app.route("/explore")
 def explore_page():
     search_term = request.args.get("q", "").strip()
-    offset = int(request.args.get("offset", 0))
+    genre = request.args.get("genre", "")
+    artist_type = request.args.get("type", "")
+    role = request.args.get("role", "")
+    sort = request.args.get("sort", "")
+    offset = max(request.args.get("offset", 0, type=int), 0)
+
+    query = build_query(search_term, genre, artist_type, role)
     try:
-        artists, tot = search_artists(search_term, offset)
+        artists, tot = search_artists(query, offset)
     except requests.RequestException as e:
         print("MusicBrainz error:", e)
         artists, tot = [], 0
@@ -67,7 +92,12 @@ def explore_page():
     for artist, image in zip(artists, images):
         artist["image"] = image
 
-    return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset)
+    if sort in ("az", "za"):
+        artists.sort(key=lambda a: a["name"].lower(), reverse=(sort == "za"))
+
+    filters = dict(q=search_term, genre=genre, type=artist_type, role=role, sort=sort)
+
+    return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset, pg_size=PG_SIZE, filters=filters, genres=GENRES, types=TYPES, roles=ROLES)
 
 @app.route("/favorites")
 def favorites_page():

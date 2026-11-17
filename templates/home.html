@@ -42,6 +42,7 @@
 </head>
     <body>
         </script>
+        <!-- navigation bar-->
         <div class="nav">
             <a href="{{ url_for('home') }}" class="logo">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" width="150">
@@ -49,15 +50,65 @@
             <div>Home</div>
             <div class="nava">
                 <a href="{{ url_for('home') }}">Home ⌂︎</a> |
-                <a href="{{ url_for('explore_page') }}">Explore</a> |
+                <a href="{{ url_for('explore_page') }}">Explore ♪</a> |
                 <a href="{{ url_for('favorites_page') }}">Favorites ♡</a>
             </div>
         </div>
         <main>
-            <h2 class="centered-text" style="color: rgb(51, 99, 51);
+            <!--<h2 class="centered-text" style="color: rgb(51, 99, 51);
             margin-bottom:0px; font-size: xx-large">The Bard welcomes you!</h2>
             <p class="centered-text" style="color: rgb(78, 128, 78);
-            margin-top:0px">The Bard is a web application that allows users to browse artists, search for artists, read information about artists, and save artists to a favorites page.This application provides a music discovery service for users and has user-friendly functionality. The intended users are music fans and anyone who wants to grow their love for music. The main page is the Home page, which contains navigation links to the other pages, a list of the application's features, and a description of the application. The Explore page displays all of The Bard's featured artists, along with an image and a description of each artist. There is a favorite button next to every artist, which allows users to add the artist to their favorites list. Additionally, there is a search bar that lets users search for a specific artist and jump to their location on the page. Finally, the Favorites page holds a user's favorite artists. On this page, users can read information about each artist or remove an artist from their favorites list.</p>
+            margin-top:0px"></p>-->
+
+            <!--welcome text-->
+            <div class="welcome">
+                <img src="images/logo.png" width="700px">
+                <h1>The home for music lovers</h1>
+                <p>
+                    Discover your new favorite artist! Browse our collection of artists or search for one you know. Learn more about the artists behind your favorite songs. Use our Favorites page to never lose an artist again!
+                </p>
+                <a class="explore-button" href="explore.html">Explore Artists</a>
+                <a class="favorites-button" href="fav.html">Favorites</a>
+                <a class="down-arrow" href="#our-features"><i class="fa fa-chevron-down"></i></a>
+            </div>
+
+            <!--features section-->
+            <div class="features-section" id="our-features">
+                <h2>Our features</h2>
+                <div class="features">
+                    <div class="feature-box">
+                        <div class="icon"><i class="fa fa-compass"></i></div>
+                        <h3>Explore</h3>
+                        <p>Discover our collection of featured artists, including hidden gems and all-time greats.</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="icon"><i class="fa fa-id-card-o"></i></div>
+                        <h3>Learn</h3>
+                        <p>Read the stories and history behind artists and their music.</p>
+                    </div>
+                    <div class="feature-box">
+                        <div class="icon"><i class="fa fa-heart"></i></div>
+                        <h3>Favorite</h3>
+                        <p>Save your favorite artists to our Favorites page. View your collection of favorites any time!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--about section-->
+            <div class="about-section">
+            <h2>Application Description</h2>
+            <div class="about">
+                <div>
+                    <p>
+                        The Bard is a web application that allows users to browse artists, search for artists, read information about artists, and save artists to a favorites page.This application provides a music discovery service for users and has user-friendly functionality. The intended users are music fans and anyone who wants to grow their love for music.
+                    </p>
+                    <p>
+                        The main page is the Home page, which contains navigation links to the other pages, a list of the application's features, and a description of the application. The Explore page displays all of The Bard's featured artists, along with an image and a description of each artist. There is a favorite button next to every artist, which allows users to add the artist to their favorites list. Additionally, there is a search bar that lets users search for a specific artist and jump to their location on the page. Finally, the Favorites page holds a user's favorite artists. On this page, users can read information about each artist or remove an artist from their favorites list.
+                    </p>
+                </div>
+                <div class="about-art"><i class="fa fa-music"></i></div>
+            </div>
+        </div>
         </main>
         
     </body>

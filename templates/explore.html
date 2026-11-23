@@ -90,9 +90,23 @@
         .search-result {
             color: rgb(51, 99, 51);
             padding: 10px 15px;
+            cursor: pointer;
         }
         .search-result:hover {
             background-color: rgb(249, 243, 188);
+        }
+        .empty-message {
+            font-size: x-large;
+            font-weight: bold;
+            text-align: center;
+            color: rgb(42, 86, 42);
+            margin-top: 40px;
+            padding 0 20px;
+        }
+        .search-message {
+            color: rgb(120, 120, 120);
+            font-style: italic;
+            padding: 10px 15px;
         }
         .container {
             display: grid;
@@ -406,48 +420,99 @@
             const dropdown = document.getElementById("search-dropdown");
             const searchButton = document.getElementById("search-button");
 
-            function searchArtists() {
-                const query = searchBar.value.trim().toLowerCase();
-                let search = [];
-                if (query) {
-                    search = artists.filter(artist => artist.name.toLowerCase().includes(query));
-                }
-                return search;
-            }
+            const searchUrl = "{{ url_for('search') }}";
+            const explorePageUrl = "{{ url_for('explore_page') }}";
+            let searchTimer;
+            let latestTerm = "";
 
-            function clearSearch() {
-                searchBar.value = "";
+            function closeDropdown() {
                 dropdown.innerHTML = "";
                 dropdown.classList.remove("open");
             }
 
+            function clearSearch() {
+                searchBar.value = "";
+                latestTerm = "";
+                clearTimeout(searchTimer);
+                closeDropdown();
+            }
+
+            function showMessage(text) {
+                dropdown.innerHTML = "";
+                const message = document.createElement("div");
+                message.className = "search-message";
+                message.textContent = text;
+                dropdown.appendChild(message);
+                dropdown.classList.add("open");
+            }
+
+            async function fetchSuggestions(term) {
+                showMessage("Fetching API data...");
+                let results = [];
+                let failed = false;
+                try {
+                    const response = await fetch(`${searchUrl}?q=${encodeURIComponent(term)}`);
+                    if (response.ok) {
+                        results = await response.json();
+                    }
+                    else {
+                        failed = true;
+                    }
+                } catch (err) {
+                    console.error("Search failed:", err);
+                    failed = true;
+                }
+                if (term !== latestTerm) return;
+                if (failed) {
+                    showMessage("Search is busy right now. Please try again.");
+                    return;
+                }
+                if (results.length === 0) {
+                    showMessage("No artists found");
+                    return;
+                }
+                dropdown.innerHTML = "";
+                results.forEach(artist => {
+                    const result = document.createElement("div");
+                    result.className = "search-result";
+                    const details = [artist.disambiguation, artist.country].filter(Boolean).join(", ");
+                    result.textContent = artist.name + (details ? ` (${details})` : "");
+                    result.dataset.id = artist.id;
+                    result.dataset.name = artist.name;
+                    dropdown.appendChild(result);
+                });
+                dropdown.classList.add("open");
+            }
+
             function submitSearch() {
-                const results = searchArtists();
-                if (results.length > 0) {
-                    goToArtist(results[0].id);
+                const term = searchBar.value.trim();
+                if (term) {
+                    location.href = `${explorePageUrl}?q=${encodeURIComponent(term)}`;
                 } else {
                     clearSearch();
                 }
             }
 
-            function goToArtist(id) {
-                document.getElementById("artist-" + id)?.scrollIntoView({ behavior: "smooth" });
+            function goToArtist(id, name) {
+                const card = document.getElementById("artist-" + id);
+                if (card) {
+                    history.replaceState(null, "", "#artist-" + id);
+                    card.scrollIntoView({ behavior: "smooth" });
+                } else {
+                    location.href = `${explorePageUrl}?q=${encodeURIComponent(name)}#artist-${id}`;
+                }
                 clearSearch();
             }
 
             searchBar.addEventListener("input", () => {
-                const results = searchArtists();
-                dropdown.innerHTML = "";
-                dropdown.classList.toggle("open", searchBar.value.trim() !== "");
-                if (results.length !== 0) {
-                    results.forEach(artist => {
-                        const result = document.createElement("div");
-                        result.className = "search-result";
-                        result.textContent = artist.name;
-                        result.dataset.id = artist.id;
-                        dropdown.appendChild(result);
-                    });
+                clearTimeout(searchTimer);
+                const term = searchBar.value.trim();
+                latestTerm = term;
+                if (term.length < 2) {
+                    closeDropdown();
+                    return;
                 }
+                searchTimer = setTimeout(() => fetchSuggestions(term), 300);
             });
 
            searchBar.addEventListener("keydown", e => {
@@ -459,7 +524,7 @@
 
             dropdown.addEventListener("click", e => {
                 const result = e.target.closest(".search-result");
-                if (result) goToArtist(result.dataset.id);
+                if (result) goToArtist(result.dataset.id, result.dataset.name);
             });
 
             searchButton.addEventListener("click", submitSearch);

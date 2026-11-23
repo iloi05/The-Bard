@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from concurrent.futures import ThreadPoolExecutor
+import requests
+import re
+import threading
+import time
 import requests
 
 app = Flask(__name__)
@@ -36,7 +40,19 @@ def build_query(search_term, genre, artist_type, role):
         parts.append(DEFAULT_GENRES)
     return " AND ".join(parts)
 
+_mb_lock = threading.Lock()
+_mb_last_call = 0.0
+
+def _rate_limit_musicbrainz():
+    global _mb_last_call
+    with _mb_lock:
+        wait = 1.0 - (time.monotonic() - _mb_last_call)
+        if wait > 0:
+            time.sleep(wait)
+        _mb_last_call = time.monotonic()
+
 def search_artists(query, offset=0):
+    _rate_limit_musicbrainz()
     response = requests.get(
         "https://musicbrainz.org/ws/2/artist/",
         headers=HEADERS,
@@ -98,6 +114,38 @@ def explore_page():
     filters = dict(q=search_term, genre=genre, type=artist_type, role=role, sort=sort)
 
     return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset, pg_size=PG_SIZE, filters=filters, genres=GENRES, types=TYPES, roles=ROLES)
+
+_suggest_cache = {}
+
+@app.route("/api/search")
+def search():
+    term = request.args.get("q", "").strip()
+    if len(term) < 2:
+        return jsonify([])
+    key = term.lower()
+    if key in _suggest_cache:
+        return jsonify(_suggest_cache[key])
+
+    parts = [f'artist:"{lucene_escape(term)}"^2']
+    last_word = re.sub(r"\W", "", term.split()[-1])
+    if last_word:
+        parts.append(f"artist:{last_word.lower()}*")
+    query = f"({' OR '.join(parts)}) AND {MUSICIAN_TYPES}"
+
+    try:
+        artists, _ = search_artists(query)
+    except requests.RequestException as e:
+        print("MusicBrainz unavailable:", e)
+        return jsonify({"error": "MuscBrainz unavailable"}), 503
+
+    results = [{
+        "id": a["id"],
+        "name": a["name"],
+        "disambiguation": a.get("disambiguation", ""),
+        "country": a.get("country", ""),
+    } for a in artists[:8]]
+    _suggest_cache[key] = results
+    return jsonify(results)
 
 @app.route("/favorites")
 def favorites_page():

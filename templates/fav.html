@@ -10,7 +10,6 @@
         .nav {
             background-color: rgb(51, 99, 51);
             color:rgb(249, 243, 188);
-            text-align: right;
             padding: 15px 20px;
             font-family:'Trebuchet MS';
             font-size: large;
@@ -29,7 +28,6 @@
         .container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;
             gap: 40px;
             margin-top: 80px;
             padding: 0 40px;
@@ -51,7 +49,7 @@
         }
         .favorite-button {
             position: absolute;
-            bottom: 20px;
+            bottom: 15px;
             right: 15px;
 
             width: 30px;
@@ -72,15 +70,9 @@
         }
         .artist-info {
             width: 250px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .artist-info p {
             margin-bottom: 5px;
-        }
-        .artist-box > p {
-            margin-top: 0;
         }
         .empty-message {
             width: 100%;
@@ -109,12 +101,12 @@
             const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
             const container = document.getElementById("favorites-container");
             const placeholder = "{{ url_for('static', filename='images/placeholder.png') }}";
-
+            // builds one card per artist (image, filled heart button connected to removeFromFavorites function, and name)
             favorites.forEach(artist => {
                 container.innerHTML += `
                     <div class="artist-box">
                         <div class="image-container">
-                            <img src="${artist.image || placeholder}" width="250" alt="${artist.name}">
+                            <img src="${artist.image || placeholder}" alt="${artist.name}">
                             <div class="heart-container">
                                 <button 
                                     class="favorite-button"
@@ -131,9 +123,11 @@
                     </div>
                 `;
             });
+            // no favorites, replaces containers with empty message
             if (favorites.length === 0) {
                 container.innerHTML = "<p class='empty-message'>You have not favorited any artists.</p>";
             }
+            // removes liked artists from favorites
             function removeFromFavorites(artistId) {
                 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
                 favorites = favorites.filter(

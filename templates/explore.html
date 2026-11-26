@@ -403,11 +403,21 @@
             {% endfor %}
             </div>
 
-            <div style="text-align:center; padding: 20px; font-size: larger;">
+            {% if not artists %}
+                <p class="empty-message">
+                    {% if error %}
+                        Couldn't load artists right now. Please try again in a moment.
+                    {% else %}
+                        No artists found. Try changing your search or filters.
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            <div style="text-align: center; padding: 20px; font-size: larger;">
                 {% if offset > 0 %}
-                    <a href="{{ url_for('explore_page', offset=offset - pg_size, **filters) }}">&larr; Prev</a>
+                    <a href="{{ url_for('explore_page', offset=[offset - pg_size, 0]|max, **filters) }}">&larr; Prev</a>
                 {% endif %}
-                {% if offset + pg_size < total %}
+                {% if has_next %}
                     <a href="{{ url_for('explore_page', offset=offset + pg_size, **filters) }}">Next &rarr;</a>
                 {% endif %}
             </div>

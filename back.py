@@ -100,17 +100,27 @@ def explore_page():
     offset = max(request.args.get("offset", 0, type=int), 0)
 
     query = build_query(search_term, genre, artist_type, role)
+    error = False
+    has_next = False
     try:
         if sort in ("az", "za"):
             batch, _ = search_artists(query, 0, limit=SORT_BATCH)
             batch.sort(key=lambda a: a["name"].lower(), reverse=(sort == "za"))
             tot = len(batch)
             artists = batch[offset:offset + PG_SIZE]
+            has_next = offset + PG_SIZE < len(batch)
         else:
-            artists, tot = search_artists(query, offset)
+            fetched, tot = search_artists(query, offset, limit=PG_SIZE + 1)
+            has_next = len(fetched) > PG_SIZE
+            artists = fetched[:PG_SIZE]
     except requests.RequestException as e:
         print("MusicBrainz error:", e)
         artists, tot = [], 0
+        error = True
+
+    if not artists and offset > 0 and not error and tot > 0:
+        last_offset = ((tot - 1) // PG_SIZE) * PG_SIZE
+        return redirect(url_for("explore_page", offset=last_offset, q=search_term, genre=genre, type=artist_type, role=role, sort=sort))
 
     with ThreadPoolExecutor(max_workers=3) as pool:
         images = list(pool.map(get_artist_image, [a["name"] for a in artists]))
@@ -119,7 +129,7 @@ def explore_page():
     
     filters = dict(q=search_term, genre=genre, type=artist_type, role=role, sort=sort)
 
-    return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset, pg_size=PG_SIZE, filters=filters, genres=GENRES, types=TYPES, roles=ROLES)
+    return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset, pg_size=PG_SIZE, filters=filters, genres=GENRES, types=TYPES, roles=ROLES, has_next=has_next, error=error)
 
 _suggest_cache = {}
 

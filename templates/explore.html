@@ -128,11 +128,6 @@
             aspect-ratio: 1 /1;
             object-fit: cover;
         }
-        .heart-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 5px;
-        }
         .favorite-button {
             position: absolute;
             bottom: 12px;
@@ -143,18 +138,15 @@
             border-radius: 50%;
             border: 1px solid #f13500;
             background-color: white;
-            
             color: #f13500;
             font-size: 26px;
-
             display: flex;
             justify-content: center;
             align-items: center;
-
             cursor: pointer;
         }
-
         .favorite-button.favorited {
+            background-color: white;
             color: #f13500;
         }
         .artist-info {
@@ -258,10 +250,13 @@
     <body>
         <!--For the like button functionality -->
         <script>
+            // reads favorites array from localStorage or returns []
             function getFavorites() {
                 const saved = localStorage.getItem("favorites");
                 return saved ? JSON.parse(saved) : [];
             }
+            // reads artist's id, name and image from button's data-* attributes
+            // removes artist from list if already favorited, otherwise adds them then saves and refresshes buttons
             function toggleFavorite(button) {
                 let favorites = getFavorites();
                 const id = button.getAttribute("data-artist-id");
@@ -276,7 +271,8 @@
                 localStorage.setItem("favorites", JSON.stringify(favorites));
                 updateFavoriteButtons();
             }
-            
+            // loops over every heart button and sets to full heart & adds to favorited
+            // or it sets to empty heart depending on whether the artist is in storage
             function updateFavoriteButtons() {
                 let favorites = getFavorites();
                 document.querySelectorAll(".favorite-button").forEach(button => {
@@ -291,7 +287,7 @@
                     }
                 });
             }
-
+            // runds updateFavoriteButtons() once page loads so saved favoites show as full hearts
             window.onload = function() {
                 updateFavoriteButtons();
             }
@@ -335,9 +331,13 @@
         </div>
 
         <div class="filter-wrapper">
+            <!-- filter button label shows count of active filters, keeps only truthy values and counts them-->
             <button type="button" id="filter-button">
                 Filter {% set active = [filters.genre, filters.type, filters.role, filters.sort]|select|list|length %}{% if active %} ({{ active }}){% endif %}
             </button>
+            <!--submit by GET to explore_page, hidden q field preserves current search term
+            Genre, Type, Role, and Sort selects = filled from genres, types, and roles
+            selected marks current choice-->
             <form method="get" action="{{ url_for('explore_page') }}" class="filter-panel" id="filter-panel">
                 <input type="hidden" name="q" value="{{ search_term }}">
 
@@ -378,12 +378,16 @@
 
                 <div class="filter-actions">
                     <button type="submit">Apply</button>
+                    <!--links back to page keeping only search term-->
                     <a href="{{ url_for('explore_page', q=search_term) }}">Clear</a>
                 </div>
             </form>
         </div>
 
         <!-- displaying artists-->
+        <!--template renders image with placeholder fallback using for loop
+        heart button carrying data-* attributes favorites script reads, name, and country & type
+        if there's no artist than an error message or "No artists found" message will be displayed-->
         <div class="container" id="artists-container">
             {% for artist in artists %}
             <div class="artist-box" id="artist-{{ artist.id }}">
@@ -412,7 +416,7 @@
                     {% endif %}
                 </p>
             {% endif %}
-
+            <!--change offset by pg_size and pass filters along via **filters-->
             <div style="text-align: center; padding: 20px; font-size: larger;">
                 {% if offset > 0 %}
                     <a href="{{ url_for('explore_page', offset=[offset - pg_size, 0]|max, **filters) }}">&larr; Prev</a>
@@ -421,11 +425,9 @@
                     <a href="{{ url_for('explore_page', offset=offset + pg_size, **filters) }}">Next &rarr;</a>
                 {% endif %}
             </div>
-        <div id="artist-data" data-artists='{{ artists|tojson }}' hidden></div>
-        <script>
-            const artists = JSON.parse(document.getElementById("artist-data").dataset.artists);
-        </script>
+    
         <!--implements search bar-->
+        <!--search bar grabs elements and URLS and defines searchTimer (debouncing) and latestTerm (discards stale responses)-->
         <script>
             const searchBar = document.getElementById("search-input");
             const dropdown = document.getElementById("search-dropdown");
@@ -435,7 +437,7 @@
             const explorePageUrl = "{{ url_for('explore_page') }}";
             let searchTimer;
             let latestTerm = "";
-
+            // hides dropdown and reset input
             function closeDropdown() {
                 dropdown.innerHTML = "";
                 dropdown.classList.remove("open");
@@ -447,7 +449,7 @@
                 clearTimeout(searchTimer);
                 closeDropdown();
             }
-
+            // show status line in dropdown
             function showMessage(text) {
                 dropdown.innerHTML = "";
                 const message = document.createElement("div");
@@ -456,7 +458,8 @@
                 dropdown.appendChild(message);
                 dropdown.classList.add("open");
             }
-
+            // shows "Fetching API data...", then calls /search endpoint & handles fail & empty results
+            // ignores response if user has since typed something else (term != latestTerm), else it builds the clickable result rows
             async function fetchSuggestions(term) {
                 showMessage("Fetching API data...");
                 let results = [];
@@ -494,7 +497,7 @@
                 });
                 dropdown.classList.add("open");
             }
-
+            // navigates to explore page with ?q=term / clears box if empty
             function submitSearch() {
                 const term = searchBar.value.trim();
                 if (term) {
@@ -503,7 +506,7 @@
                     clearSearch();
                 }
             }
-
+            // scrolls to card if on current page else navigates to search for name with card's anchor in URL
             function goToArtist(id, name) {
                 const card = document.getElementById("artist-" + id);
                 if (card) {
@@ -514,7 +517,7 @@
                 }
                 clearSearch();
             }
-
+            // debounced fetch of 300ms and only for >= 2 characters is triggered when typing
             searchBar.addEventListener("input", () => {
                 clearTimeout(searchTimer);
                 const term = searchBar.value.trim();
@@ -525,27 +528,28 @@
                 }
                 searchTimer = setTimeout(() => fetchSuggestions(term), 300);
             });
-
+            // search is submitted when enter is hit on keyboard
            searchBar.addEventListener("keydown", e => {
                 if (e.key === "Enter") {
                     e.preventDefault();
                     submitSearch();
                 }
             });
-
+            // clicking on result goes to artist
             dropdown.addEventListener("click", e => {
                 const result = e.target.closest(".search-result");
                 if (result) goToArtist(result.dataset.id, result.dataset.name);
             });
-
+            // clicking on search button submits search
             searchButton.addEventListener("click", submitSearch);
-
+            // drop down menu closes when clicking elsewhere
             document.addEventListener("click", e => {
                if (!dropdown.contains(e.target) && e.target !== searchBar) {
                     clearSearch();
                 }
             });
             // Filter
+            // toggles open class, clicking anywhere outside panel closes it
             const filterButton = document.getElementById("filter-button");
             const filterPanel = document.getElementById("filter-panel");
 

@@ -51,14 +51,14 @@ def _rate_limit_musicbrainz():
             time.sleep(wait)
         _mb_last_call = time.monotonic()
 
-def search_artists(query, offset=0):
+def search_artists(query, offset=0, limit=PG_SIZE):
     _rate_limit_musicbrainz()
     response = requests.get(
         "https://musicbrainz.org/ws/2/artist/",
         headers=HEADERS,
         params={"query": query, "fmt": "json",
-                "limit": PG_SIZE, "offset": offset},
-                timeout=10,
+                "limit": limit, "offset": offset},
+        timeout=10,
     )
     response.raise_for_status()
     data = response.json()
@@ -88,6 +88,8 @@ def get_artist_image(artist_name):
 def home():
     return render_template("home.html")
 
+SORT_BATCH = 100
+
 @app.route("/explore")
 def explore_page():
     search_term = request.args.get("q", "").strip()
@@ -99,18 +101,22 @@ def explore_page():
 
     query = build_query(search_term, genre, artist_type, role)
     try:
-        artists, tot = search_artists(query, offset)
+        if sort in ("az", "za"):
+            batch, _ = search_artists(query, 0, limit=SORT_BATCH)
+            batch.sort(key=lambda a: a["name"].lower(), reverse=(sort == "za"))
+            tot = len(batch)
+            artists = batch[offset:offset + PG_SIZE]
+        else:
+            artists, tot = search_artists(query, offset)
     except requests.RequestException as e:
         print("MusicBrainz error:", e)
         artists, tot = [], 0
+
     with ThreadPoolExecutor(max_workers=3) as pool:
         images = list(pool.map(get_artist_image, [a["name"] for a in artists]))
     for artist, image in zip(artists, images):
         artist["image"] = image
-
-    if sort in ("az", "za"):
-        artists.sort(key=lambda a: a["name"].lower(), reverse=(sort == "za"))
-
+    
     filters = dict(q=search_term, genre=genre, type=artist_type, role=role, sort=sort)
 
     return render_template("explore.html", artists=artists, search_term=search_term, total=tot, offset=offset, pg_size=PG_SIZE, filters=filters, genres=GENRES, types=TYPES, roles=ROLES)
